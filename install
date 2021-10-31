@@ -3,11 +3,11 @@
 cp aliases ~/.tools-aliases
 
 if ! grep -q '~/.tools-aliases' ~/.bashrc 
-then echo '. ~/.tools-aliases' >> ~/.bashrc
+then echo -e '\n[[ -f ~/.tools/aliases ]] && . ~/.tools-aliases' >> ~/.bashrc
 fi
 
 if ! grep  -q '~/.tools-aliases' ~/.zshrc
-then echo '. ~/.tools-aliases' >> ~/.zshrc
+then echo -e '\n[[ -f ~/.tools/aliases ]] && . ~/.tools-aliases' >> ~/.zshrc
 fi
 
 exit 0

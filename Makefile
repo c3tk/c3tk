@@ -7,3 +7,6 @@ build:
 
 install:
 	./install
+
+uninstall:
+	rm ~/.tools-aliases
