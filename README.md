@@ -2,11 +2,34 @@
 
 ## Prerequsites 
 
-First install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+First install [Docker](https://www.docker.com/products/docker-desktop)
 
 ## How to use the tools
 
-Download the repository, run `make`, and open a new terminal.
+Download this repository and run `make`.
 
-Enjoy using the tools! (jq, safe, spruce, cf, bosh, credhub, & genesis)
+Now every time you open a new terminal you can directly use the latest cloud tools:
+
+* aws
+* bosh
+* cf
+* credhub
+* fly
+* gcloud
+* genesis
+* gsutil
+* jq
+* k9s
+* kubectl
+* run-help
+* safe
+* spruce
+* tools
+* vault
+
+# Manual Installation
+
+Pull the image of this and run `docker run --rm tools:latest`. 
+
+Follow the instructions that it prints.
 
