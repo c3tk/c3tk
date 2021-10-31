@@ -14,67 +14,67 @@ case "${cmd}" in
   (bash)
     docker_run \
       -v ~/:/root \
-      "${image}" bash
+      "${image}" bash "${@}"
     ;;
   (aws)
     docker_run \
       -v ~/.aws:/root/.aws \
-      "${image}" aws
+      "${image}" aws "${@}"
     ;;
   (bosh)
     docker_run \
       -v ~/.bosh:/root/.bosh \
-      "${image}" bosh
+      "${image}" bosh "${@}"
     ;;
   (cf)
     docker_run \
       -v :/root/.cf \
-      "${image}" cf
+      "${image}" cf "${@}"
     ;;
   (cc-me)
     docker_run -w /ccme \
       -v $PWD:/ccme \
-      "${image}" cc-me
+      "${image}" cc-me "${@}"
     ;;
   (sipcalc)
     docker_run \
-      "${image}" sipcalc
+      "${image}" sipcalc "${@}"
     ;;
   (whois)
     docker_run \
-      "${image}" whois
+      "${image}" whois "${@}"
     ;;
   (netcat)
     docker_run \
-      "${image}" netcat
+      "${image}" netcat "${@}"
     ;;
   (tcpdump)
     docker_run \
-      "${image}" tcpdump
+      "${image}" tcpdump "${@}"
     ;;
   (tig)
     docker run --rm -w /app -it \
       -v $PWD:/app \
-      "${image}" tig
+      "${image}" tig "${@}"
     ;;
   (nmap)
     docker_run \
-      "${image}" nmap
+      "${image}" nmap "${@}"
     ;;
   (tmux)
     docker run --rm -w /app -it \
       -v $PWD:/app \
-      "${image}" tmux
+      "${image}" tmux "${@}"
     ;;
   (tmux)
     docker run --rm -w /app -it \
       -v $PWD:/app \
-      "${image}" gpg
+      "${image}" gpg "${@}"
     ;;
   (credhub)
     docker_run \
       -v ~/.credhub:/root/.credhub \
-      "${image}" credhub
+      "${image}" credhub "${@}"
     ;;
   (genesis)
     docker run --rm -w /genesis -it \
@@ -85,53 +85,53 @@ case "${cmd}" in
       -v ~/.bosh:/root/.bosh \
       -v ~/.cf:/root/.cf \
       -v $PWD:/genesis \
-      "${image}" genesis
+      "${image}" genesis "${@}"
     ;;
   (gcloud)
     docker_run \
       -v ~/.gcp:/root/.gcp \
-      "${image}" gcloud
+      "${image}" gcloud "${@}"
     ;;
   (gsutil)
     docker_run \
       -v ~/.gcp:/root/.gcp \
-      "${image}" gsutil
+      "${image}" gsutil "${@}"
     ;;
   (jq)
     docker_run \
-      "${image}" /bin/jq
+      "${image}" /bin/jq "${@}"
     ;;
   (fly)
     docker_run \
       -v ~/.flyrc:/root/.flyrc \
-      "${image}" fly
+      "${image}" fly "${@}"
     ;;
   (k9s)
     docker_run \
       -v ~/.kube:/root/.kube \
       -v ~/.config:/root/config \
-      "${image}" k9s
+      "${image}" k9s "${@}"
     ;;
   (kubectl)
     docker_run \
       -v ~/.kube:/root/.kube \
-      "${image}" kubectl
+      "${image}" kubectl "${@}"
     ;;
   (spruce)
     docker_run \
       -v $PWD:/root \
-      "${image}" spruce
+      "${image}" spruce "${@}"
     ;;
   (safe)
     docker_run \
       -v ~/.saferc:/root/.saferc \
       -v ~/.vaultrc:/root/.vaultrc \
-      "${image}" safe
+      "${image}" safe "${@}"
     ;;
   (vault)
     docker_run \
       -v ~/.vaultrc:/root/.vaultrc \
-      "${image}" vault
+      "${image}" vault "${@}"
     ;;
 esac
 
