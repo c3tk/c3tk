@@ -37,5 +37,14 @@ echo "Installing \`genesis\`..."
 url="https://github.com/genesis-community/genesis/releases/latest/download/genesis"
 curl -sL "${url}" -o /bin/genesis && chmod 0755 /bin/genesis && genesis -v
 
+echo "Installing \`kubectl\`..."
+
+echo "Installing \`gcloud\`..."
+url="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-362.0.0-linux-x86_64.tar.gz"
+curl -sL "${url}" -o google-cloud-sdk.tar.gz 
+tar -zxf google-cloud-sdk.tar.gz
+ln -fs /root/google-cloud-sdk/bin/gcloud /bin/gcloud
+ln -fs /root/google-cloud-sdk/bin/gsutil /bin/gsutil
+
 exit 0
 

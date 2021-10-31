@@ -3,7 +3,7 @@ FROM vault:latest AS vault
 FROM alpine:latest
 
 RUN apk add curl tar bash git dropbear-ssh git bind-tools whois tcpdump sipcalc \
-	make perl python3 
+	make perl python3 ruby aws-cli
 
 COPY --from=vault /bin/vault /bin/vault 
 
