@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 alias tools='docker run --rm -it -v ~/:/root tools:latest /bin/bash'
 alias bosh='docker run --rm -it -v ~/.bosh:/root/.bosh -v $HOME/:/root tools:latest /bin/bosh'
 alias cf='docker run --rm -it -v ~/.cf:/root/.cf tools:latest cf'
