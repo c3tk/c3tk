@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cp aliases ~/.tools-aliases
+cp ./sh/aliases ~/.tools-aliases
 
 if ! grep -q '~/.tools-aliases' ~/.bashrc 
 then echo -e '\n[[ -s ~/.tools-aliases ]] && . ~/.tools-aliases' >> ~/.bashrc
