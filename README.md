@@ -8,7 +8,7 @@ First install [Docker](https://www.docker.com/products/docker-desktop)
 
 Download this repository and run `make`.
 
-Now every time you open a new terminal you can directly use the latest cloud tools:
+Now when you open a new shell you can directly use the latest cloud tools:
 
 * aws
 * bosh
