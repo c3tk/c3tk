@@ -30,4 +30,7 @@ RUN curl -L https://github.com/cloudfoundry/credhub-cli/releases/download/2.9.1/
 # Install the `genesis CLi`
 RUN curl -L https://github.com/genesis-community/genesis/releases/download/v2.8.2/genesis -o /bin/genesis && chmod 0755 /bin/genesis && genesis -v
 
-CMD ["/bin/bash"]
+ADD ./aliases /aliases
+
+CMD /bin/bash -c "echo -e 'Add the following aliases to your shell rc file:\n\n' && cat /aliases"
+
