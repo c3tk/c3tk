@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+touch ~/.saferc ~/.vaultrc 
+
+alias tools='docker run --rm -it -v ~/:/root tools:latest /bin/bash'
+alias bosh='docker run --rm -it -v ~/.bosh:/root/.bosh -v $HOME/:/root tools:latest /bin/bosh'
+alias cf='docker run --rm -it -v ~/.cf:/root/.cf tools:latest cf'
+alias safe='docker run --rm -it -v ~/.saferc:/root/.saferc -v ~/.vaultrc:/root/.vaultrc tools:latest /bin/safe'
+alias spruce='docker run --rm -it -v $PWD:/root tools:latest /bin/spruce'
+alias jq='docker run --rm -it tools:latest /bin/jq'
+alias vault='docker run --rm -it -v ~/.vaultrc:/root/.vaultrc -v $HOME/:/root tools:latest /bin/vault'
+alias credhub='docker run --rm -it -v ~/.credhub:/root/.credhub tools:latest /bin/credhub'
+alias genesis='docker run --rm -it -v $PWD/:/root tools:latest /bin/genesis'
