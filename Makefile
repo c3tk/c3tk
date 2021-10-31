@@ -6,7 +6,7 @@ build:
 	docker build . -t tools:latest
 
 install:
-	./install
+	./bin/install
 
 uninstall:
 	rm ~/.tools-aliases

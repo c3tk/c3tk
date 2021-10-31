@@ -20,9 +20,9 @@ RUN apt-get install -y --no-install-recommends bash curl wget tar git make less 
 	openssh-client procps dnsutils whois netcat tcpdump sipcalc perl python3 tig \
 	tmux tree pwgen unzip nmap gpg
 
-ADD ./build /build
-ADD ./aliases /aliases
+ADD ./sh/aliases ./aliases
+ADD ./bin/build /bin/build
 
-RUN /build
+RUN /bin/build
 
-CMD /bin/bash -c "echo -e '\nAdd the following aliases to your shell rc file:\n' && cat /aliases"
+CMD /bin/bash -c "echo -e '\nAdd the following aliases to your shell rc file:\n' && cat aliases"
