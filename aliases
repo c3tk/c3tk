@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 alias aws='docker run --rm -it -v ~/.aws:/root/.aws tools:latest aws'
 alias bosh='docker run --rm -it -v ~/.bosh:/root/.bosh -v $HOME/:/root tools:latest bosh'
-alias cf='docker run --rm -it -v ~/.cf:/root/.cf tools:latest cf'
+alias cf='docker run --rm -it -v :/root/.cf tools:latest cf'
+alias cc-me='docker run --rm -w /ccme -it $PWD:/ccme tools:latest cc-me'
 alias credhub='docker run --rm -it -v ~/.credhub:/root/.credhub tools:latest credhub'
 alias gcloud='docker run --rm -it -v ~/.gcp:/root/.gcp tools:latest gcloud'
 alias genesis='touch ~/.vaultrc ~/.saferc && docker run --rm -w /genesis -it -v ~/.saferc:/root/.saferc -v ~/.vaultrc:/root/vaultrc -v ~/.credhub:/root/.credhub -v ~/.bosh:/root/.bosh -v ~/.cf:/root/.cf -v $PWD:/genesis tools:latest genesis'

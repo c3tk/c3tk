@@ -30,6 +30,10 @@ v=$(curl -s https://github.com/cloudfoundry/bosh-cli/releases/latest | awk -F\" 
 url="https://github.com/cloudfoundry/bosh-cli/releases/download/${v}/bosh-cli-${v/v/}-linux-amd64"
 curl -sL "${url}" -o /bin/bosh && chmod 0755 /bin/bosh && bosh -v
 
+echo "Installing \`cc-me\`..."
+url="https://raw.githubusercontent.com/jhunt/cc-me/master/cc-me"
+curl -sL "${url}" -o /bin/cc-me && chmod 0755 /bin/cc-me
+
 echo "Installing \`credhub\`..."
 v=$(curl -s https://github.com/cloudfoundry/credhub-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/cloudfoundry/credhub-cli/releases/download/${v}/credhub-linux-${v}.tgz"

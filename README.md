@@ -12,6 +12,7 @@ Now when you open a new shell you can directly use the latest cloud tools:
 
 * aws
 * bosh
+* cc-me
 * cf
 * credhub
 * fly

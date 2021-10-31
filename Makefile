@@ -1,4 +1,4 @@
-.PHONY: build install
+.PHONY: build install uninstall
 
 all: build install
 
