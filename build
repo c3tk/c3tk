@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+exec &> >(tee -a build.log)
+
 vault -v # Should come from upstream vault official docker image via Dockerfile
 
 echo "Installing \`jq\`..."
@@ -37,14 +39,24 @@ echo "Installing \`genesis\`..."
 url="https://github.com/genesis-community/genesis/releases/latest/download/genesis"
 curl -sL "${url}" -o /bin/genesis && chmod 0755 /bin/genesis && genesis -v
 
-echo "Installing \`kubectl\`..."
-
-echo "Installing \`gcloud\`..."
-url="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-362.0.0-linux-x86_64.tar.gz"
-curl -sL "${url}" -o google-cloud-sdk.tar.gz 
-tar -zxf google-cloud-sdk.tar.gz
+#echo "Installing \`gcloud\`..."
+#url="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-362.0.0-linux-x86_64.tar.gz"
+#curl -sL "${url}" -o google-cloud-sdk.tar.gz 
+#tar -zxf google-cloud-sdk.tar.gz
 ln -fs /root/google-cloud-sdk/bin/gcloud /bin/gcloud
 ln -fs /root/google-cloud-sdk/bin/gsutil /bin/gsutil
+
+echo "Installing \`kubectl\`..."
+v=$(curl -s https://github.com/kubernetes/kubernetes/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
+url="https://storage.googleapis.com/kubernetes-release/release/${v}/bin/linux/amd64/kubectl"
+curl -fsSL "${url}" -o /bin/kubectl && chmod +x /bin/kubectl
+kubectl version 
+
+echo "Installing \`kubectl\`..."
+v=$(curl -s https://github.com/concourse/concourse/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
+url="https://github.com/concourse/concourse/releases/download/${v}/fly-${v/v/}-linux-amd64.tgz"
+curl -fsSL "${url}" | tar -zx && mv fly /bin/fly && fly --version
+fly -v
 
 exit 0
 
