@@ -22,4 +22,4 @@ alias k9s='docker run --rm -it -v ~/.kube:/root/.kube -v ~/.config:/root/config 
 alias kubectl='docker run --rm -it -v ~/.kube:/root/.kube tools:latest kubectl'
 alias spruce='docker run --rm -it -v $PWD:/root tools:latest spruce'
 alias safe='touch ~/.saferc ~/.vaultrc && docker run --rm -it -v ~/.saferc:/root/.saferc -v ~/.vaultrc:/root/.vaultrc tools:latest safe'
-alias vault='touch ~/.vaultrc && docker run --rm -it -v ~/.vaultrc:/root/.vaultrc -v $HOME/:/root tools:latest vault'
+alias vault='touch ~/.vaultrc && docker run --rm -it -v ~/.vaultrc:/root/.vaultrc tools:latest vault'
