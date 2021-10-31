@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+vault -v # Should come from upstream vault official docker image via Dockerfile
+
+echo "Installing \`jq\`..."
+url="https://github.com/stedolan/jq/releases/latest/download/jq-linux64"
+curl -sL "${url}" -o /bin/jq && chmod 0766 /bin/jq && jq -V
+
+echo "Installing \`safe\`..."
+url="https://github.com/starkandwayne/safe/releases/latest/download/safe-linux-amd64"
+curl -sL "${url}" -o /bin/safe && chmod 0755 /bin/safe && safe -v
+
+echo "Installing \`spruce\`..."
+url="https://github.com/geofffranks/spruce/releases/latest/download/spruce-linux-amd64"
+curl -sL "${url}" -o /bin/spruce && chmod 0755 /bin/spruce && spruce -v
+
+echo "Installing \`cf\`..."
+url="https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v7&source=github"
+curl -sL "${url}" | tar -zx && mv cf7 /bin/ && ln -s /bin/cf7 /bin/cf && cf -v
+
+echo "Downloading cf completions to /usr/share/bash-completion/completions for \`cf\`..."
+mkdir -p /usr/share/bash-completion/completions/ 
+url="https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf7"
+curl -sL "${url}" -o /usr/share/bash-completion/completions/cf7 
+
+echo "Installing \`bosh\`..."
+v=$(curl -s https://github.com/cloudfoundry/bosh-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
+url="https://github.com/cloudfoundry/bosh-cli/releases/download/${v}/bosh-cli-${v/v/}-linux-amd64"
+curl -sL "${url}" -o /bin/bosh && chmod 0755 /bin/bosh && bosh -v
+
+echo "Installing \`credhub\`..."
+v=$(curl -s https://github.com/cloudfoundry/credhub-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
+url="https://github.com/cloudfoundry/credhub-cli/releases/download/${v}/credhub-linux-${v}.tgz"
+curl -sL "${url}" | tar -zx && mv credhub /bin/credhub && credhub --version
+
+echo "Installing \`genesis\`..."
+url="https://github.com/genesis-community/genesis/releases/latest/download/genesis"
+curl -sL "${url}" -o /bin/genesis && chmod 0755 /bin/genesis && genesis -v
+
+exit 0
+

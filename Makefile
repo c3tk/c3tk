@@ -1,7 +1,9 @@
-all: build aliases
+.PHONY: build install
 
-build: 
+all: build install
+
+build:
 	docker build . -t tools:latest
 
-aliases:
-	docker run --rm tools:latest
+install:
+	./install
