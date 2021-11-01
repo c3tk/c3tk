@@ -2,54 +2,79 @@
 
 image="tools:latest"
 
-cmd="${1}" ; shift
+cmd="${1}"
 
 docker_run() {
-  exec docker run --rm -it "${@}"
+  exec docker run --rm "${@}"
 }
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
 
+# Allow this script to be symlinked as the actual command name :)
+if [[ ${0//*\/} == "sw" ]] 
+then shift
+else cmd="${0//*\/}"
+fi
+
 case "${cmd}" in 
   (bash)
     docker_run \
+      -it \
       -v ~/:/root \
       "${image}" bash "${@}"
     ;;
   (aws)
     docker_run \
+      -it \
       -v ~/.aws:/root/.aws \
       "${image}" aws "${@}"
     ;;
   (bosh)
     docker_run \
+      -it \
       -v ~/.bosh:/root/.bosh \
+      -v $PWD:/bosh \
+      -w /bosh \
       "${image}" bosh "${@}"
     ;;
   (cf)
     docker_run \
+      -it \
       -v :/root/.cf \
+      -v $PWD:/cf \
+      -w /cf \
       "${image}" cf "${@}"
     ;;
   (cc-me)
-    docker_run -w /ccme \
+    docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
       -v $PWD:/ccme \
+      -w /ccme \
       "${image}" cc-me "${@}"
     ;;
   (sipcalc)
     docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
       "${image}" sipcalc "${@}"
     ;;
   (whois)
     docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
       "${image}" whois "${@}"
     ;;
   (netcat)
     docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
       "${image}" netcat "${@}"
     ;;
   (tcpdump)
     docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
       "${image}" tcpdump "${@}"
     ;;
   (tig)
@@ -59,25 +84,32 @@ case "${cmd}" in
     ;;
   (nmap)
     docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
       "${image}" nmap "${@}"
     ;;
   (tmux)
     docker run --rm -w /app -it \
+      -it \
       -v $PWD:/app \
       "${image}" tmux "${@}"
     ;;
-  (tmux)
+  (gpg)
     docker run --rm -w /app -it \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
       -v $PWD:/app \
       "${image}" gpg "${@}"
     ;;
   (credhub)
     docker_run \
+      -it \
       -v ~/.credhub:/root/.credhub \
       "${image}" credhub "${@}"
     ;;
   (genesis)
-    docker run --rm -w /genesis -it \
+    docker_run \
+      -it \
       -v ~/.ssh:/root/.ssh \
       -v ~/.saferc:/root/.saferc \
       -v ~/.vaultrc:/root/vaultrc \
@@ -85,51 +117,66 @@ case "${cmd}" in
       -v ~/.bosh:/root/.bosh \
       -v ~/.cf:/root/.cf \
       -v $PWD:/genesis \
+      -w /genesis \
       "${image}" genesis "${@}"
     ;;
   (gcloud)
     docker_run \
+      -it \
       -v ~/.gcp:/root/.gcp \
       "${image}" gcloud "${@}"
     ;;
   (gsutil)
     docker_run \
+      -it \
       -v ~/.gcp:/root/.gcp \
       "${image}" gsutil "${@}"
     ;;
   (jq)
     docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
+      -v $PWD:/root \
+      -w /root \
       "${image}" /bin/jq "${@}"
     ;;
   (fly)
     docker_run \
+      -it \
       -v ~/.flyrc:/root/.flyrc \
       "${image}" fly "${@}"
     ;;
   (k9s)
     docker_run \
+      -it \
       -v ~/.kube:/root/.kube \
       -v ~/.config:/root/config \
       "${image}" k9s "${@}"
     ;;
   (kubectl)
     docker_run \
+      -it \
       -v ~/.kube:/root/.kube \
       "${image}" kubectl "${@}"
     ;;
   (spruce)
     docker_run \
-      -v $PWD:/root \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
+      -v $PWD:/spruce \
+      -w /spruce \
       "${image}" spruce "${@}"
     ;;
   (safe)
     docker_run \
+      -it \
       -v ~/.saferc:/root/.saferc \
       -v ~/.vaultrc:/root/.vaultrc \
       "${image}" safe "${@}"
     ;;
   (vault)
     docker_run \
+      -it \
       -v ~/.vaultrc:/root/.vaultrc \
       "${image}" vault "${@}"
     ;;

@@ -21,10 +21,9 @@ RUN apt-get install -y --no-install-recommends bash curl ca-certificates wget ta
 	openssh-client procps dnsutils whois netcat tcpdump sipcalc perl python3 tig \
 	tmux tree pwgen unzip nmap gpg
 
-ADD ./sh/aliases ./aliases
 ADD ./bin/build /bin/build
 ADD ./bin/sw /bin/sw
 
 RUN /bin/build
 
-CMD /bin/bash -c "echo -e '\nAdd the following aliases to your shell rc file:\n' && cat aliases"
+CMD /bin/bash -c "echo -e '\nPlease use the symlinked commands in /usr/local/bin after installation"

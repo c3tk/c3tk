@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
+set -x
+
 cp ./bin/sw /usr/local/bin/sw
-cp ./sh/aliases ~/.tools-aliases
 
-if ! grep -q '~/.tools-aliases' ~/.bashrc 
-then echo -e '\n[[ -s ~/.tools-aliases ]] && . ~/.tools-aliases' >> ~/.bashrc
-fi
+cmds=($(grep '  (' /usr/local/bin/sw | tr -d '(' | tr -d ')'))
 
-if ! grep  -q '~/.tools-aliases' ~/.zshrc
-then echo -e '\n[[ -s ~/.tools-aliases ]] && . ~/.tools-aliases' >> ~/.zshrc
-fi
+for cmd in ${cmds[@]}
+do
+  if [[ ! -x /usr/local/bin/${cmd} ]]
+  then ln -fs /usr/local/bin/sw /usr/local/bin/${cmd}
+  fi
+done
 
 exit 0
