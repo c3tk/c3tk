@@ -17,7 +17,7 @@ else cmd="${0//*\/}"
 fi
 
 case "${cmd}" in 
-  (bash)
+  (shell)
     docker_run \
       -it \
       -v ~/:/root \
