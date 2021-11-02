@@ -3,7 +3,7 @@
 cmd="${1}"
 
 docker_run() {
-  exec docker run --rm "${@}" -w /w -v$PWD:/w
+  exec docker run --rm "${@}" -w '/w' -v$PWD:/w
 }
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
@@ -19,7 +19,7 @@ case "${cmd}" in
     docker_run \
       -it \
       -v ~/:/root \
-      "nix-tools:latest" bash "${@}"
+      "starkandwayne/c3tk:latest" bash "${@}"
     ;;
   (aws)
     docker_run \
@@ -37,70 +37,70 @@ case "${cmd}" in
     docker_run \
       -it \
       -v ~/.bosh:/root/.bosh \
-      "nix-tools:latest" bosh "${@}"
+      "starkandwayne/c3tk:latest" bosh "${@}"
     ;;
   (cf)
     docker_run \
       -it \
       -v :/root/.cf \
-      "nix-tools:latest" cf "${@}"
+      "starkandwayne/c3tk:latest" cf "${@}"
     ;;
   (cc-me)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" cc-me "${@}"
+      "starkandwayne/c3tk:latest" cc-me "${@}"
     ;;
   (sipcalc)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" sipcalc "${@}"
+      "starkandwayne/c3tk:latest" sipcalc "${@}"
     ;;
   (whois)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" whois "${@}"
+      "starkandwayne/c3tk:latest" whois "${@}"
     ;;
   (netcat)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" netcat "${@}"
+      "starkandwayne/c3tk:latest" netcat "${@}"
     ;;
   (tcpdump)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" tcpdump "${@}"
+      "starkandwayne/c3tk:latest" tcpdump "${@}"
     ;;
   (tig)
     docker run --rm -it \
-      "nix-tools:latest" tig "${@}"
+      "starkandwayne/c3tk:latest" tig "${@}"
     ;;
   (nmap)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" nmap "${@}"
+      "starkandwayne/c3tk:latest" nmap "${@}"
     ;;
   (tmux)
     docker_run \
       -it \
-      "nix-tools:latest" tmux "${@}"
+      "starkandwayne/c3tk:latest" tmux "${@}"
     ;;
   (gpg)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" gpg "${@}"
+      "starkandwayne/c3tk:latest" gpg "${@}"
     ;;
   (credhub)
     docker_run \
       -it \
       -v ~/.credhub:/root/.credhub \
-      "nix-tools:latest" credhub "${@}"
+      "starkandwayne/c3tk:latest" credhub "${@}"
     ;;
   (genesis)
     docker_run \
@@ -111,7 +111,7 @@ case "${cmd}" in
       -v ~/.credhub:/root/.credhub \
       -v ~/.bosh:/root/.bosh \
       -v ~/.cf:/root/.cf \
-      "nix-tools:latest" genesis "${@}"
+      "starkandwayne/c3tk:latest" genesis "${@}"
     ;;
   (gcloud)
     docker_run \
@@ -129,45 +129,45 @@ case "${cmd}" in
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" /bin/jq "${@}"
+      "starkandwayne/c3tk:latest" /bin/jq "${@}"
     ;;
   (fly)
     docker_run \
       -it \
       -v ~/.flyrc:/root/.flyrc \
-      "nix-tools:latest" fly "${@}"
+      "starkandwayne/c3tk:latest" fly "${@}"
     ;;
   (k9s)
     docker_run \
       -it \
       -v ~/.kube:/root/.kube \
       -v ~/.config:/root/config \
-      "nix-tools:latest" k9s "${@}"
+      "starkandwayne/c3tk:latest" k9s "${@}"
     ;;
   (kubectl)
     docker_run \
       -it \
       -v ~/.kube:/root/.kube \
-      "nix-tools:latest" kubectl "${@}"
+      "starkandwayne/c3tk:latest" kubectl "${@}"
     ;;
   (spruce)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "nix-tools:latest" spruce "${@}"
+      "starkandwayne/c3tk:latest" spruce "${@}"
     ;;
   (safe)
     docker_run \
       -it \
       -v ~/.saferc:/root/.saferc \
       -v ~/.vaultrc:/root/.vaultrc \
-      "nix-tools:latest" safe "${@}"
+      "starkandwayne/c3tk:latest" safe "${@}"
     ;;
   (vault)
     docker_run \
       -it \
       -v ~/.vaultrc:/root/.vaultrc \
-      "nix-tools:latest" vault "${@}"
+      "starkandwayne/c3tk:latest" vault "${@}"
     ;;
 esac
 
