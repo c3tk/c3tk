@@ -35,7 +35,6 @@ ENV \
     NIX_PATH=/nix/var/nix/profiles/per-user/root/channels
 
 ADD bin/nix-install /root/nix-install
-ADD conf/nix.conf /root/.config/nix/nix.conf
 
 RUN /root/nix-install
 
