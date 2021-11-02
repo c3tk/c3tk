@@ -17,7 +17,7 @@ curl -sL "${url}" -o /usr/bin/spruce && chmod 0755 /usr/bin/spruce && spruce -v
 
 echo "Installing \`cf\`..."
 url="https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v7&source=github"
-curl -sL "${url}" | tar -zx && mv cf7 /usr/bin/ && ln -s /usr/bin/cf7 /usr/bin/cf && cf -v
+curl -sL "${url}" | tar -zx && mv cf7 /usr/bin/cf7 && ln -s /usr/bin/cf7 /usr/bin/cf && cf -v
 
 echo "Downloading cf completions to /usr/share/bash-completion/completions for \`cf\`..."
 mkdir -p /usr/share/bash-completion/completions/ 
@@ -37,6 +37,11 @@ echo "Installing \`credhub\`..."
 v=$(curl -s https://github.com/cloudfoundry/credhub-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/cloudfoundry/credhub-cli/releases/download/${v}/credhub-linux-${v}.tgz"
 curl -sL "${url}" | tar -zx && mv credhub /usr/bin/credhub && credhub --version
+
+echo "Installing \`vault\`..."
+v=$(curl -s https://github.com/hashicorp/vault/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}' | tr -d 'v')
+url="https://releases.hashicorp.com/vault/${v}/vault_${v}_linux_amd64.zip"
+curl -sLO "${url}" && unzip "vault_${v}_linux_amd64.zip" && mv vault /usr/bin/vault
 
 echo "Installing \`genesis\`..."
 url="https://github.com/genesis-community/genesis/releases/latest/download/genesis"

@@ -3,7 +3,7 @@
 cmd="${1}"
 
 docker_run() {
-  exec docker run --rm "${@}" -w '/w' -v$PWD:/w
+  exec docker run --rm -w '/w' -v$PWD:/w "${@}"
 }
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
