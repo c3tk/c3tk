@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 cp ./bin/sw /usr/local/bin/sw
 
 cmds=($(grep '  (' /usr/local/bin/sw | tr -d '(' | tr -d ')'))
