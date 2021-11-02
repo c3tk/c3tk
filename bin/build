@@ -44,24 +44,16 @@ echo "Installing \`genesis\`..."
 url="https://github.com/genesis-community/genesis/releases/latest/download/genesis"
 curl -sL "${url}" -o /usr/local/bin/genesis && chmod 0755 /usr/local/bin/genesis && genesis -v
 
-#echo "Installing \`gcloud\`..."
-#url="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-362.0.0-linux-x86_64.tar.gz"
-#curl -sL "${url}" -o google-cloud-sdk.tar.gz 
-#tar -zxf google-cloud-sdk.tar.gz
-ln -fs /root/google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud
-ln -fs /root/google-cloud-sdk/bin/gsutil /usr/local/bin/gsutil
-
 echo "Installing \`kubectl\`..."
 v=$(curl -s https://github.com/kubernetes/kubernetes/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://storage.googleapis.com/kubernetes-release/release/${v}/bin/linux/amd64/kubectl"
 curl -fsSL "${url}" -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
 kubectl version 
 
-echo "Installing \`kubectl\`..."
+echo "Installing \`fly\`..."
 v=$(curl -s https://github.com/concourse/concourse/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/concourse/concourse/releases/download/${v}/fly-${v/v/}-linux-amd64.tgz"
 curl -fsSL "${url}" | tar -zx && mv fly /usr/local/bin/fly && fly --version
-fly -v
 
 echo "Installing \`k9s\`..."
 url="https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz"
