@@ -35,7 +35,7 @@ Now when you open a new shell you can directly use the latest cloud tools:
 
 # Manual Installation
 
-Pull the image of this and run `docker run --rm tools:latest`. 
+Pull the image of this and run `docker run --rm starkandwayne/c3tk:latest`. 
 
 Follow the instructions that it prints.
 
