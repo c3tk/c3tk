@@ -10,3 +10,8 @@ install:
 
 uninstall:
 	./bin/uninstall
+
+push:
+	docker push starkandwayne/c3tk:latest
+
+publish: build push

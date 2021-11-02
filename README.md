@@ -4,6 +4,10 @@ This is a busybox style tool kit for being able to leverage many tools on any
 workstation without having to install them on the host system in a repeatably
 and consistently.
 
+## Installation
+
+Download this repository and run `make install`.
+
 ## Prerequsites 
 
 First install [Docker](https://www.docker.com/products/docker-desktop)
@@ -33,9 +37,4 @@ Now when you open a new shell you can directly use the latest cloud tools:
 * tools
 * vault
 
-# Manual Installation
-
-Pull the image of this and run `docker run --rm starkandwayne/c3tk:latest`. 
-
-Follow the instructions that it prints.
 
