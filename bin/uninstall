@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+cmds=($(grep '  (' ./bin/c3tk | tr -d '(' | tr -d ')'))
+for cmd in ${cmds[@]}
+do
+  if [[ -L /usr/local/bin/${cmd} ]]
+  then rm -f /usr/local/bin/${cmd}
+  fi
+done
+
+rm -f /usr/local/bin/c3tk
+
+exit 0

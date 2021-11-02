@@ -9,7 +9,7 @@ docker_run() {
 touch ~/.saferc ~/.vaultrc ~/.flyrc
 
 # Allow this script to be symlinked as the actual command name :)
-if [[ ${0//*\/} == "dtk" ]] 
+if [[ ${0//*\/} == "c3tk" ]] 
 then shift
 else cmd="${0//*\/}"
 fi

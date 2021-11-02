@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-cp ./bin/dtk /usr/local/bin/dtk
+cp ./bin/c3tk /usr/local/bin/c3tk
 
-cmds=($(grep '  (' /usr/local/bin/dtk | tr -d '(' | tr -d ')'))
+cmds=($(grep '  (' ./bin/c3tk | tr -d '(' | tr -d ')'))
 
 for cmd in ${cmds[@]}
 do
   if [[ ! -x /usr/local/bin/${cmd} ]]
-  then ln -fs /usr/local/bin/dtk /usr/local/bin/${cmd}
+  then ln -fs /usr/local/bin/c3tk /usr/local/bin/${cmd}
   fi
 done
 

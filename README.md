@@ -1,4 +1,8 @@
-# Docker ToolKit - CLI Tools 
+# Containerized Command Center Tool Kit (c3tk)
+
+This is a busybox style tool kit for being able to leverage many tools on any
+workstation without having to install them on the host system in a repeatably
+and consistently.
 
 ## Prerequsites 
 
@@ -10,6 +14,7 @@ Download this repository and run `make`.
 
 Now when you open a new shell you can directly use the latest cloud tools:
 
+* c3tk
 * aws
 * bosh
 * cc-me
