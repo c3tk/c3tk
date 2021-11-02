@@ -5,7 +5,7 @@ image="tools:latest"
 cmd="${1}"
 
 docker_run() {
-  exec docker run --rm "${@}"
+  exec docker run --rm "${@}" -w /w -v$PWD:/w
 }
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
@@ -33,24 +33,18 @@ case "${cmd}" in
     docker_run \
       -it \
       -v ~/.bosh:/root/.bosh \
-      -v $PWD:/bosh \
-      -w /bosh \
       "${image}" bosh "${@}"
     ;;
   (cf)
     docker_run \
       -it \
       -v :/root/.cf \
-      -v $PWD:/cf \
-      -w /cf \
       "${image}" cf "${@}"
     ;;
   (cc-me)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      -v $PWD:/ccme \
-      -w /ccme \
       "${image}" cc-me "${@}"
     ;;
   (sipcalc)
@@ -78,8 +72,7 @@ case "${cmd}" in
       "${image}" tcpdump "${@}"
     ;;
   (tig)
-    docker run --rm -w /app -it \
-      -v $PWD:/app \
+    docker run --rm -it \
       "${image}" tig "${@}"
     ;;
   (nmap)
@@ -89,16 +82,14 @@ case "${cmd}" in
       "${image}" nmap "${@}"
     ;;
   (tmux)
-    docker run --rm -w /app -it \
+    docker_run \
       -it \
-      -v $PWD:/app \
       "${image}" tmux "${@}"
     ;;
   (gpg)
-    docker run --rm -w /app -it \
+    docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      -v $PWD:/app \
       "${image}" gpg "${@}"
     ;;
   (credhub)
@@ -116,8 +107,6 @@ case "${cmd}" in
       -v ~/.credhub:/root/.credhub \
       -v ~/.bosh:/root/.bosh \
       -v ~/.cf:/root/.cf \
-      -v $PWD:/genesis \
-      -w /genesis \
       "${image}" genesis "${@}"
     ;;
   (gcloud)
@@ -136,8 +125,6 @@ case "${cmd}" in
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      -v $PWD:/root \
-      -w /root \
       "${image}" /bin/jq "${@}"
     ;;
   (fly)
@@ -163,8 +150,6 @@ case "${cmd}" in
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      -v $PWD:/spruce \
-      -w /spruce \
       "${image}" spruce "${@}"
     ;;
   (safe)
