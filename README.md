@@ -4,19 +4,20 @@ This is a busybox style tool kit for being able to leverage many tools on any
 workstation without having to install them on the host system in a repeatably
 and consistently.
 
-## Installation
-
-Download this repository and run `make install`.
-
 ## Prerequsites 
 
 First install [Docker](https://www.docker.com/products/docker-desktop)
 
-## How to use the tools
+## Installation
 
-Download this repository and run `make`.
+1. Download the [c3tk repo](https://github.com/starkandwayne/c3tk) 
+2. Run `make install`
 
-Now when you open a new shell you can directly use the latest cloud tools:
+## How to Use
+
+Installation installs the following commands to `/usr/local/bin`.
+
+Ensure that `/usr/local/bin` is in your path and then use these in your terminal:
 
 * c3tk
 * aws
