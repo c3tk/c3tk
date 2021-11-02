@@ -3,7 +3,7 @@
 all: build install
 
 build:
-	docker build . -t tools:latest
+	docker build . --platform linux/$$(uname -m) -t dtk:latest
 
 install:
 	./bin/install

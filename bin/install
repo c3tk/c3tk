@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-cp ./bin/sw /usr/local/bin/sw
+cp ./bin/dtk /usr/local/bin/dtk
 
-cmds=($(grep '  (' /usr/local/bin/sw | tr -d '(' | tr -d ')'))
+cmds=($(grep '  (' /usr/local/bin/dtk | tr -d '(' | tr -d ')'))
 
 for cmd in ${cmds[@]}
 do
   if [[ ! -x /usr/local/bin/${cmd} ]]
-  then ln -fs /usr/local/bin/sw /usr/local/bin/${cmd}
+  then ln -fs /usr/local/bin/dtk /usr/local/bin/${cmd}
   fi
 done
 

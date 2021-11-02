@@ -1,25 +1,23 @@
 #!/usr/bin/env bash
 
 set -v
-exec &> >(tee -a build.log)
-
-vault -v # Should come from upstream vault official docker image via Dockerfile
+exec &> >(tee -a /root/build.log)
 
 echo "Installing \`jq\`..."
 url="https://github.com/stedolan/jq/releases/latest/download/jq-linux64"
-curl -sL "${url}" -o /usr/local/bin/jq && chmod 0766 /usr/local/bin/jq && jq -V
+curl -sL "${url}" -o /usr/bin/jq && chmod 0766 /usr/bin/jq && jq -V
 
 echo "Installing \`safe\`..."
 url="https://github.com/starkandwayne/safe/releases/latest/download/safe-linux-amd64"
-curl -sL "${url}" -o /usr/local/bin/safe && chmod 0755 /usr/local/bin/safe && safe -v
+curl -sL "${url}" -o /usr/bin/safe && chmod 0755 /usr/bin/safe && safe -v
 
 echo "Installing \`spruce\`..."
 url="https://github.com/geofffranks/spruce/releases/latest/download/spruce-linux-amd64"
-curl -sL "${url}" -o /usr/local/bin/spruce && chmod 0755 /usr/local/bin/spruce && spruce -v
+curl -sL "${url}" -o /usr/bin/spruce && chmod 0755 /usr/bin/spruce && spruce -v
 
 echo "Installing \`cf\`..."
 url="https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v7&source=github"
-curl -sL "${url}" | tar -zx && mv cf7 /usr/local/bin/ && ln -s /usr/local/bin/cf7 /usr/local/bin/cf && cf -v
+curl -sL "${url}" | tar -zx && mv cf7 /usr/bin/ && ln -s /usr/bin/cf7 /usr/bin/cf && cf -v
 
 echo "Downloading cf completions to /usr/share/bash-completion/completions for \`cf\`..."
 mkdir -p /usr/share/bash-completion/completions/ 
@@ -29,34 +27,34 @@ curl -sL "${url}" -o /usr/share/bash-completion/completions/cf7
 echo "Installing \`bosh\`..."
 v=$(curl -s https://github.com/cloudfoundry/bosh-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/cloudfoundry/bosh-cli/releases/download/${v}/bosh-cli-${v/v/}-linux-amd64"
-curl -sL "${url}" -o /usr/local/bin/bosh && chmod 0755 /usr/local/bin/bosh && bosh -v
+curl -sL "${url}" -o /usr/bin/bosh && chmod 0755 /usr/bin/bosh && bosh -v
 
 echo "Installing \`cc-me\`..."
 url="https://raw.githubusercontent.com/jhunt/cc-me/master/cc-me"
-curl -sL "${url}" -o /usr/local/bin/cc-me && chmod 0755 /usr/local/bin/cc-me
+curl -sL "${url}" -o /usr/bin/cc-me && chmod 0755 /usr/bin/cc-me
 
 echo "Installing \`credhub\`..."
 v=$(curl -s https://github.com/cloudfoundry/credhub-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/cloudfoundry/credhub-cli/releases/download/${v}/credhub-linux-${v}.tgz"
-curl -sL "${url}" | tar -zx && mv credhub /usr/local/bin/credhub && credhub --version
+curl -sL "${url}" | tar -zx && mv credhub /usr/bin/credhub && credhub --version
 
 echo "Installing \`genesis\`..."
 url="https://github.com/genesis-community/genesis/releases/latest/download/genesis"
-curl -sL "${url}" -o /usr/local/bin/genesis && chmod 0755 /usr/local/bin/genesis && genesis -v
+curl -sL "${url}" -o /usr/bin/genesis && chmod 0755 /usr/bin/genesis && genesis -v
 
 echo "Installing \`kubectl\`..."
 v=$(curl -s https://github.com/kubernetes/kubernetes/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://storage.googleapis.com/kubernetes-release/release/${v}/bin/linux/amd64/kubectl"
-curl -fsSL "${url}" -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
+curl -fsSL "${url}" -o /usr/bin/kubectl && chmod +x /usr/bin/kubectl
 kubectl version 
 
 echo "Installing \`fly\`..."
 v=$(curl -s https://github.com/concourse/concourse/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/concourse/concourse/releases/download/${v}/fly-${v/v/}-linux-amd64.tgz"
-curl -fsSL "${url}" | tar -zx && mv fly /usr/local/bin/fly && fly --version
+curl -fsSL "${url}" | tar -zx && mv fly /usr/bin/fly && fly --version
 
 echo "Installing \`k9s\`..."
 url="https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz"
-curl -sL "${url}" | tar -zx && mv k9s /usr/local/bin/k9s && chmod 0755 /usr/local/bin/k9s && k9s -v
+curl -sL "${url}" | tar -zx && mv k9s /usr/bin/k9s && chmod 0755 /usr/bin/k9s && k9s version
 
 exit 0

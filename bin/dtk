@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-image="tools:latest"
-
 cmd="${1}"
 
 docker_run() {
@@ -11,7 +9,7 @@ docker_run() {
 touch ~/.saferc ~/.vaultrc ~/.flyrc
 
 # Allow this script to be symlinked as the actual command name :)
-if [[ ${0//*\/} == "sw" ]] 
+if [[ ${0//*\/} == "dtk" ]] 
 then shift
 else cmd="${0//*\/}"
 fi
@@ -21,82 +19,88 @@ case "${cmd}" in
     docker_run \
       -it \
       -v ~/:/root \
-      "${image}" bash "${@}"
+      "nix-tools:latest" bash "${@}"
     ;;
   (aws)
     docker_run \
       -it \
       -v ~/.aws:/root/.aws \
-      "${image}" aws "${@}"
+      "amazon/aws-cli" aws "${@}"
+    ;;
+  (az)
+    docker_run \
+      -it \
+      -v ~/.azure:/root/.azure \
+      "mcr.microsoft.com/azure-cli" az "${@}"
     ;;
   (bosh)
     docker_run \
       -it \
       -v ~/.bosh:/root/.bosh \
-      "${image}" bosh "${@}"
+      "nix-tools:latest" bosh "${@}"
     ;;
   (cf)
     docker_run \
       -it \
       -v :/root/.cf \
-      "${image}" cf "${@}"
+      "nix-tools:latest" cf "${@}"
     ;;
   (cc-me)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" cc-me "${@}"
+      "nix-tools:latest" cc-me "${@}"
     ;;
   (sipcalc)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" sipcalc "${@}"
+      "nix-tools:latest" sipcalc "${@}"
     ;;
   (whois)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" whois "${@}"
+      "nix-tools:latest" whois "${@}"
     ;;
   (netcat)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" netcat "${@}"
+      "nix-tools:latest" netcat "${@}"
     ;;
   (tcpdump)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" tcpdump "${@}"
+      "nix-tools:latest" tcpdump "${@}"
     ;;
   (tig)
     docker run --rm -it \
-      "${image}" tig "${@}"
+      "nix-tools:latest" tig "${@}"
     ;;
   (nmap)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" nmap "${@}"
+      "nix-tools:latest" nmap "${@}"
     ;;
   (tmux)
     docker_run \
       -it \
-      "${image}" tmux "${@}"
+      "nix-tools:latest" tmux "${@}"
     ;;
   (gpg)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" gpg "${@}"
+      "nix-tools:latest" gpg "${@}"
     ;;
   (credhub)
     docker_run \
       -it \
       -v ~/.credhub:/root/.credhub \
-      "${image}" credhub "${@}"
+      "nix-tools:latest" credhub "${@}"
     ;;
   (genesis)
     docker_run \
@@ -107,63 +111,63 @@ case "${cmd}" in
       -v ~/.credhub:/root/.credhub \
       -v ~/.bosh:/root/.bosh \
       -v ~/.cf:/root/.cf \
-      "${image}" genesis "${@}"
+      "nix-tools:latest" genesis "${@}"
     ;;
   (gcloud)
     docker_run \
       -it \
       -v ~/.gcp:/root/.gcp \
-      "${image}" gcloud "${@}"
+      "gcr.io/google.com/cloudsdktool/cloud-sdk:latest" gcloud "${@}"
     ;;
   (gsutil)
     docker_run \
       -it \
       -v ~/.gcp:/root/.gcp \
-      "${image}" gsutil "${@}"
+      "gcp-tools:latest" gsutil "${@}"
     ;;
   (jq)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" /bin/jq "${@}"
+      "nix-tools:latest" /bin/jq "${@}"
     ;;
   (fly)
     docker_run \
       -it \
       -v ~/.flyrc:/root/.flyrc \
-      "${image}" fly "${@}"
+      "nix-tools:latest" fly "${@}"
     ;;
   (k9s)
     docker_run \
       -it \
       -v ~/.kube:/root/.kube \
       -v ~/.config:/root/config \
-      "${image}" k9s "${@}"
+      "nix-tools:latest" k9s "${@}"
     ;;
   (kubectl)
     docker_run \
       -it \
       -v ~/.kube:/root/.kube \
-      "${image}" kubectl "${@}"
+      "nix-tools:latest" kubectl "${@}"
     ;;
   (spruce)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "${image}" spruce "${@}"
+      "nix-tools:latest" spruce "${@}"
     ;;
   (safe)
     docker_run \
       -it \
       -v ~/.saferc:/root/.saferc \
       -v ~/.vaultrc:/root/.vaultrc \
-      "${image}" safe "${@}"
+      "nix-tools:latest" safe "${@}"
     ;;
   (vault)
     docker_run \
       -it \
       -v ~/.vaultrc:/root/.vaultrc \
-      "${image}" vault "${@}"
+      "nix-tools:latest" vault "${@}"
     ;;
 esac
 

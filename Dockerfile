@@ -1,29 +1,43 @@
 # syntax=docker/dockerfile:1
-FROM vault:latest AS vault
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:latest AS gcsdk
-FROM amazon/aws-cli AS awscli
-FROM ruby:latest as ruby
 
 FROM ubuntu:latest
 
-COPY --from=vault /bin/vault /bin/vault 
-COPY --from=gcsdk /usr/lib/google-cloud-sdk /root/google-cloud-sdk
-COPY --from=awscli /usr/local/aws-cli/* /usr/local/aws-cli/
-COPY --from=awscli /usr/local/bin/* /usr/local/bin/
-#COPY --from=ruby /usr/share/mime/application/x-ruby.xml  /usr/share/mime/application/x-ruby.xml
-#COPY --from=ruby /usr/local/ /usr/local/
-
-RUN apt-get update && ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && \
-	apt-get install -y --no-install-recommends tzdata && \
-	dpkg-reconfigure --frontend noninteractive tzdata
-
-RUN apt-get install -y --no-install-recommends bash curl ca-certificates wget tar git make less \
+RUN apt-get update \
+	&& ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime \
+	&& apt-get install -y --no-install-recommends \
+	libssl-dev bash curl ca-certificates wget make tar git make less \
 	openssh-client procps dnsutils whois netcat tcpdump sipcalc perl python3 tig \
-	tmux tree pwgen unzip nmap gpg
+	tmux tree pwgen unzip nmap gpg tzdata xz-utils \
+	&& dpkg-reconfigure --frontend noninteractive tzdata \
+  && echo hosts: files dns > /etc/nsswitch.conf
 
-ADD ./bin/build /bin/build
-ADD ./bin/sw /bin/sw
+WORKDIR /root
 
-RUN /bin/build
+ADD ./bin/build /root/build
 
-CMD /bin/bash -c "echo -e '\nPlease use the symlinked commands in /usr/local/bin after installation"
+RUN /root/build
+
+ARG NIX_VERSION=2.3.15
+
+ONBUILD ENV \
+    ENV=/etc/profile \
+    USER=root \
+    PATH=/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/bin:/sbin:/usr/bin:/usr/sbin \
+    GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt \
+    NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
+ENV \
+    ENV=/etc/profile \
+    USER=root \
+    PATH=/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/bin:/sbin:/usr/bin:/usr/sbin \
+    GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt \
+    NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    NIX_PATH=/nix/var/nix/profiles/per-user/root/channels
+
+ADD bin/nix-install /root/nix-install
+ADD conf/nix.conf /root/.config/nix/nix.conf
+
+RUN /root/nix-install
+
+CMD /bin/bash
+

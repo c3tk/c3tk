@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+exec &> >(tee -a nix-install.log)
+
+set -ex
+
+arch=$(uname -m)
+tarball="nix-${NIX_VERSION}-${arch}-linux.tar.xz"
+base=$(basename ${tarball} ".tar.xz")
+url="https://nixos.org/releases/nix/nix-${NIX_VERSION}/${tarball}"
+
+curl -sLO ${url}
+
+tar xf ${tarball}
+
+addgroup -gid 30000 --system nixbld
+
+for i in {1..30}
+do
+  useradd -c "Nix build user $i" -M -N -r -s "$(which nologin)" \
+    --home /var/empty -g nixbld -G nixbld -u $((30000 + i)) nixbld-${i}
+done
+
+mkdir -m 0755 /etc/nix
+
+cat <<NIX > /etc/nix/nix.conf 
+sandbox = false
+filter-syscalls = false
+use-sqlite-wal = false
+NIX
+
+mkdir -m 0755 /nix
+
+USER=root sh ${base}/install
+
+ln -s /nix/var/nix/profiles/default/etc/profile.d/nix.sh /etc/profile.d/
+
+rm -r /root/${base}*
+
+/nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-old
+/nix/var/nix/profiles/default/bin/nix-store --optimise
+/nix/var/nix/profiles/default/bin/nix-store --verify --check-contents
+
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
+nix-channel --update
+
