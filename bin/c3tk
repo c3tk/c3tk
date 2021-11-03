@@ -3,7 +3,7 @@
 cmd="${1}"
 
 docker_run() {
-  exec docker run --rm -w '/w' -v$PWD:/w "${@}"
+  exec docker run --rm -w '/w' -v${PWD}:/w "${@}"
 }
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
@@ -130,6 +130,18 @@ case "${cmd}" in
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "starkandwayne/c3tk:latest" /bin/jq "${@}"
+    ;;
+  (yq)
+    docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
+      "starkandwayne/c3tk:latest" /bin/yq "${@}"
+    ;;
+  (xq)
+    docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
+      "starkandwayne/c3tk:latest" xq "${@}"
     ;;
   (fly)
     docker_run \

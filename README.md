@@ -38,4 +38,11 @@ Ensure that `/usr/local/bin` is in your path and then use these in your terminal
 * tools
 * vault
 
+## Notes
+
+`fly` can take a little longer to run depending on network connectivity and 
+bandwith to the concourse server. This is because it will run 
+`fly -t $target sync` before running the acutal command to ensure that the 
+cli version matches the target version. We do this because otherwise the fly
+command is programmed to unhelpfully choose to not run.
 

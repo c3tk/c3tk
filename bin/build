@@ -3,65 +3,94 @@
 set -v
 exec &> >(tee -a /root/build.log)
 
-echo "Installing \`jq\`..."
+installPath="/opt/bin"
+
+mkdir -p "${installPath}"
+
+chmod_ln() { 
+  chmod 0766 "${installPath}/${cmd}"
+  ln -s "${installPath}/${1}" "/usr/local/bin/${1}"
+}
+
+install_cmd() {
+  cmd="$1" ; shift
+  url="$2" ; shift
+  echo "Installing \`${cmd}\`..."
+  eval "$@"
+  chmod_ln "${cmd}"
+}
+
+cmd=jq ; echo "Installing \`${cmd}\`..."
 url="https://github.com/stedolan/jq/releases/latest/download/jq-linux64"
-curl -sL "${url}" -o /usr/bin/jq && chmod 0766 /usr/bin/jq && jq -V
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Installing \`safe\`..."
+cmd=yq ; echo "Installing \`${cmd}\`..."
+url="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+cmd=xq ; echo "Installing \`${cmd}\`..."
+pip3 install ${cmd} && mv /usr/local/bin/${cmd} "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+cmd=safe ; echo "Installing \`${cmd}\`..."
 url="https://github.com/starkandwayne/safe/releases/latest/download/safe-linux-amd64"
-curl -sL "${url}" -o /usr/bin/safe && chmod 0755 /usr/bin/safe && safe -v
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Installing \`spruce\`..."
+cmd=spruce ; echo "Installing \`${cmd}\`..."
 url="https://github.com/geofffranks/spruce/releases/latest/download/spruce-linux-amd64"
-curl -sL "${url}" -o /usr/bin/spruce && chmod 0755 /usr/bin/spruce && spruce -v
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Installing \`cf\`..."
+cmd=cf7 ; echo "Installing \`${cmd}\`..."
 url="https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v7&source=github"
-curl -sL "${url}" | tar -zx && mv cf7 /usr/bin/cf7 && mv cf /usr/bin/cf && cf -v
+curl -sL "${url}" | tar -zx 
+mv "${cmd}" "${installPath}/${cmd}" && chmod_ln "${cmd}"
+cmd=cf ; echo "Installing \`${cmd}\`..."
+mv "${cmd}" "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Downloading cf completions to /usr/share/bash-completion/completions for \`cf\`..."
-mkdir -p /usr/share/bash-completion/completions/ 
-url="https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf7"
-curl -sL "${url}" -o /usr/share/bash-completion/completions/cf7 
-
-echo "Installing \`bosh\`..."
+cmd=bosh ; echo "Installing \`${cmd}\`..."
 v=$(curl -s https://github.com/cloudfoundry/bosh-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/cloudfoundry/bosh-cli/releases/download/${v}/bosh-cli-${v/v/}-linux-amd64"
-curl -sL "${url}" -o /usr/bin/bosh && chmod 0755 /usr/bin/bosh && bosh -v
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Installing \`cc-me\`..."
+cmd=boss ; echo "Installing \`${cmd}\`..."
+https://github.com/releases/latest
+v=$(curl -s https://github.com/blacksmith-community/boss/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
+url="https://github.com/blacksmith-community/boss/releases/download/${v}/boss-linux-amd64"
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+cmd=cc-me ; echo "Installing \`${cmd}\`..."
 url="https://raw.githubusercontent.com/jhunt/cc-me/master/cc-me"
-curl -sL "${url}" -o /usr/bin/cc-me && chmod 0755 /usr/bin/cc-me
+ curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Installing \`credhub\`..."
+cmd=credhub ; echo "Installing \`${cmd}\`..."
 v=$(curl -s https://github.com/cloudfoundry/credhub-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/cloudfoundry/credhub-cli/releases/download/${v}/credhub-linux-${v}.tgz"
-curl -sL "${url}" | tar -zx && mv credhub /usr/bin/credhub && credhub --version
+curl -sL "${url}" | tar -zx && mv "${cmd}" "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Installing \`vault\`..."
+cmd="${vault}"; echo "Installing \`${cmd}\`..."
 v=$(curl -s https://github.com/hashicorp/vault/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}' | tr -d 'v')
 file="vault_${v}_linux_amd64.zip"
 url="https://releases.hashicorp.com/vault/${v}/${file}"
-curl -sLO "${url}" && unzip "${file}" && mv vault /usr/bin/vault
+curl -sLO "${url}" && unzip "${file}" && mv "${cmd}" "${installPath}/${cmd}" &&
+  chmod_ln "${cmd}"
 rm -f "${file}"
 
-echo "Installing \`genesis\`..."
+cmd=genesis ; echo "Installing \`${cmd}\`..."
 url="https://github.com/genesis-community/genesis/releases/latest/download/genesis"
-curl -sL "${url}" -o /usr/bin/genesis && chmod 0755 /usr/bin/genesis && genesis -v
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Installing \`kubectl\`..."
+cmd=kubectl ; echo "Installing \`${cmd}\`..."
 v=$(curl -s https://github.com/kubernetes/kubernetes/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://storage.googleapis.com/kubernetes-release/release/${v}/bin/linux/amd64/kubectl"
-curl -fsSL "${url}" -o /usr/bin/kubectl && chmod +x /usr/bin/kubectl
-kubectl version 
+curl -fsSL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-echo "Installing \`fly\`..."
+cmd=fly ; echo "Installing \`${cmd}\`..."
 v=$(curl -s https://github.com/concourse/concourse/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://github.com/concourse/concourse/releases/download/${v}/fly-${v/v/}-linux-amd64.tgz"
-curl -fsSL "${url}" | tar -zx && mv fly /usr/bin/fly && fly --version
+curl -fsSL "${url}" | tar -zx && mv "${cmd}" "${installPath}/${cmd}"
+# NOTE: for `fly` we use a wrapper script in /usr/local/bin/
 
-echo "Installing \`k9s\`..."
+cmd=k9s ; echo "Installing \`${cmd}\`..."
 url="https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz"
-curl -sL "${url}" | tar -zx && mv k9s /usr/bin/k9s && chmod 0755 /usr/bin/k9s && k9s version
+curl -sL "${url}" | tar -zx && mv "${cmd}" "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
 exit 0
