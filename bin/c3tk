@@ -69,6 +69,12 @@ case "${cmd}" in
       --log-driver=none -a stdin -a stdout -a stderr \
       "starkandwayne/c3tk:latest" netcat "${@}"
     ;;
+  (terraform)
+    docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
+      "hashicorp/terraform:latest" terraform "${@}"
+    ;;
   (tcpdump)
     docker_run \
       -i \
