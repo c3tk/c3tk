@@ -9,18 +9,20 @@ docker_run() {
 install_cmds() {
   for _cmd in "${@}"
   do
-    [[ -x ${INSTALL_PATH}/${cmd} ]] ||
-      ln -fs ${INSTALL_PATH}/c3tk ${INSTALL_PATH}/${cmd}
+    [[ -x ${INSTALL_PATH}/${_cmd} ]] ||
+      sudo ln -fs ${INSTALL_PATH}/c3tk ${INSTALL_PATH}/${_cmd}
   done
 }
 
 install() {
-  cp $0 "${INSTALL_PATH}/c3tk"
+  set -x
+  sudo mkdir -p "${INSTALL_PATH}"
+  sudo cp $0 "${INSTALL_PATH}/c3tk"
   if (( $# == 0 ))
   then
     # TODO: Allow for install cmds list and/or groups to be specified
-    cmds=($(grep '^  (' $0 | tr -d '(' | tr -d ')'))
-    install_cmds
+    _cmds=($(grep '^  (' $0 | tr -d '(' | tr -d ')'))
+    install_cmds ${_cmds[@]}
     exit 0
   fi
 }
