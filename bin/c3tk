@@ -3,7 +3,7 @@
 cmd="${1}"
 
 docker_run() {
-  exec docker run --rm -w '/w' -v${PWD}:/w "${@}"
+  exec docker run --rm --platform="linux/amd64" -w '/w' -v${PWD}:/w "${@}"
 }
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
@@ -14,12 +14,16 @@ then shift
 else cmd="${0//*\/}"
 fi
 
+# TODO: Use ~/.config/c3tk to select an upstream image, such as :version/:rc
+c3tk_image="starkandwayne/c3tk:latest"
+terraform_image="hashicorp/terraform:latest"
+
 case "${cmd}" in 
   (shell)
     docker_run \
       -it \
       -v ~/:/root \
-      "starkandwayne/c3tk:latest" bash "${@}"
+      "${c3tk_image}" bash "${@}"
     ;;
   (aws)
     docker_run \
@@ -37,43 +41,43 @@ case "${cmd}" in
     docker_run \
       -it \
       -v ~/.bosh:/root/.bosh \
-      "starkandwayne/c3tk:latest" bosh "${@}"
+      "${c3tk_image}" bosh "${@}"
     ;;
   (cf)
     docker_run \
       -it \
       -v :/root/.cf \
-      "starkandwayne/c3tk:latest" cf "${@}"
+      "${c3tk_image}" cf "${@}"
     ;;
   (cc-me)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" cc-me "${@}"
+      "${c3tk_image}" cc-me "${@}"
     ;;
   (sipcalc)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" sipcalc "${@}"
+      "${c3tk_image}" sipcalc "${@}"
     ;;
   (whois)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" whois "${@}"
+      "${c3tk_image}" whois "${@}"
     ;;
   (netcat)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" netcat "${@}"
+      "${c3tk_image}" netcat "${@}"
     ;;
   (terraform)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "hashicorp/terraform:latest" terraform "${@}"
+      "${terraform_image}" terraform "${@}"
     ;;
   (terragrunt)
     docker_run \
@@ -85,34 +89,34 @@ case "${cmd}" in
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" tcpdump "${@}"
+      "${c3tk_image}" tcpdump "${@}"
     ;;
   (tig)
     docker run --rm -it \
-      "starkandwayne/c3tk:latest" tig "${@}"
+      "${c3tk_image}" tig "${@}"
     ;;
   (nmap)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" nmap "${@}"
+      "${c3tk_image}" nmap "${@}"
     ;;
   (tmux)
     docker_run \
       -it \
-      "starkandwayne/c3tk:latest" tmux "${@}"
+      "${c3tk_image}" tmux "${@}"
     ;;
   (gpg)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" gpg "${@}"
+      "${c3tk_image}" gpg "${@}"
     ;;
   (credhub)
     docker_run \
       -it \
       -v ~/.credhub:/root/.credhub \
-      "starkandwayne/c3tk:latest" credhub "${@}"
+      "${c3tk_image}" credhub "${@}"
     ;;
   (genesis)
     docker_run \
@@ -123,7 +127,7 @@ case "${cmd}" in
       -v ~/.credhub:/root/.credhub \
       -v ~/.bosh:/root/.bosh \
       -v ~/.cf:/root/.cf \
-      "starkandwayne/c3tk:latest" genesis "${@}"
+      "${c3tk_image}" genesis "${@}"
     ;;
   (gcloud)
     docker_run \
@@ -141,57 +145,57 @@ case "${cmd}" in
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" /bin/jq "${@}"
+      "${c3tk_image}" /bin/jq "${@}"
     ;;
   (yq)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" /bin/yq "${@}"
+      "${c3tk_image}" /bin/yq "${@}"
     ;;
   (xq)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" xq "${@}"
+      "${c3tk_image}" xq "${@}"
     ;;
   (fly)
     docker_run \
       -it \
       -v ~/.flyrc:/root/.flyrc \
-      "starkandwayne/c3tk:latest" fly "${@}"
+      "${c3tk_image}" fly "${@}"
     ;;
   (k9s)
     docker_run \
       -it \
       -v ~/.kube:/root/.kube \
       -v ~/.config:/root/config \
-      "starkandwayne/c3tk:latest" k9s "${@}"
+      "${c3tk_image}" k9s "${@}"
     ;;
   (kubectl)
     docker_run \
       -it \
       -v ~/.kube:/root/.kube \
-      "starkandwayne/c3tk:latest" kubectl "${@}"
+      "${c3tk_image}" kubectl "${@}"
     ;;
   (spruce)
     docker_run \
       -i \
       --log-driver=none -a stdin -a stdout -a stderr \
-      "starkandwayne/c3tk:latest" spruce "${@}"
+      "${c3tk_image}" spruce "${@}"
     ;;
   (safe)
     docker_run \
       -it \
       -v ~/.saferc:/root/.saferc \
       -v ~/.vaultrc:/root/.vaultrc \
-      "starkandwayne/c3tk:latest" safe "${@}"
+      "${c3tk_image}" safe "${@}"
     ;;
   (vault)
     docker_run \
       -it \
       -v ~/.vaultrc:/root/.vaultrc \
-      "starkandwayne/c3tk:latest" vault "${@}"
+      "${c3tk_image}" vault "${@}"
     ;;
 esac
 
