@@ -75,6 +75,12 @@ case "${cmd}" in
       --log-driver=none -a stdin -a stdout -a stderr \
       "hashicorp/terraform:latest" terraform "${@}"
     ;;
+  (terragrunt)
+    docker_run \
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
+      "alpine/terragrunt:latest" terragrunt "${@}"
+    ;;
   (tcpdump)
     docker_run \
       -i \

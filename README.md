@@ -36,6 +36,7 @@ Ensure that `/usr/local/bin` is in your path and then use these in your terminal
 * safe
 * spruce
 * terraform
+* terragrunt
 * tools
 * vault
 
