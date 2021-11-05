@@ -15,8 +15,7 @@ install_cmds() {
 }
 
 install() {
-  set -x
-  mkdir -p "${INSTALL_PATH}" 
+  mkdir -p "${INSTALL_PATH}" "${CONFIG_PATH}"
   cp $0 "${INSTALL_PATH}/c3tk"
   if (( $# == 0 ))
   then
@@ -37,12 +36,13 @@ else
   cmd="${0//*\/}"
 fi
 
+CONFIG_PATH="${CONFIG_PATH:-$HOME/.config/c3tk}"
 INSTALL_PREFIX="${INSTALL_PATH:-/usr/local/bin}"
 INSTALL_PATH="${INSTALL_PREFIX}/c3tk/bin"
 
 # TODO: Use ~/.config/c3tk to select an upstream image, such as :version/:rc
-c3tk_image="starkandwayne/c3tk:latest"
-terraform_image="hashicorp/terraform:latest"
+c3tk_image="starkandwayne/c3tk:latest" # CONFIG_PATH/c3tk/{image,tag}
+terraform_image="hashicorp/terraform:latest" # CONFIG_PATH/terraform/{image,tag}
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
 
@@ -131,10 +131,11 @@ case "${cmd}" in
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" nmap "${@}"
     ;;
-  (tmux)
+  (credhub)
     docker_run \
       -it \
-      "${c3tk_image}" tmux "${@}"
+      -v ~/.credhub:/root/.credhub \
+      "${c3tk_image}" credhub "${@}"
     ;;
   (gpg)
     docker_run \
@@ -142,11 +143,11 @@ case "${cmd}" in
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" gpg "${@}"
     ;;
-  (credhub)
+  (govc)
     docker_run \
-      -it \
-      -v ~/.credhub:/root/.credhub \
-      "${c3tk_image}" credhub "${@}"
+      -i \
+      --log-driver=none -a stdin -a stdout -a stderr \
+      "vmware/govc:latest" /govc "${@}"
     ;;
   (genesis)
     docker_run \

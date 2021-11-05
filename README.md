@@ -27,6 +27,7 @@ Ensure that `/usr/local/bin/c3tk/bin` is in your path and then use these in your
 * credhub
 * fly
 * gcloud
+* govc
 * genesis
 * gsutil
 * jq
