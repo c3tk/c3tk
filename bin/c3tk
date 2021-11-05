@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-cmd="${1}"
-
-docker_run() {
-  exec docker run --rm --platform="linux/amd64" -w '/w' -v${PWD}:/w "${@}"
-}
-
 install_cmds() {
   for _cmd in "${@}"
   do
@@ -27,10 +21,14 @@ install() {
   exit 0
 }
 
+docker_run() {
+  exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w "${@}"
+}
+
 # Allow this script to be symlinked as the actual command name :)
+cmd="$1"
 if [[ ${0//*\/} == "c3tk" ]] 
 then 
-  cmd=$1 
   shift
 else 
   cmd="${0//*\/}"
@@ -39,6 +37,8 @@ fi
 CONFIG_PATH="${CONFIG_PATH:-$HOME/.config/c3tk}"
 INSTALL_PREFIX="${INSTALL_PATH:-/usr/local/bin}"
 INSTALL_PATH="${INSTALL_PREFIX}/c3tk/bin"
+
+[[ ${DEBUG} == "" ]] || set -xv
 
 # TODO: Use ~/.config/c3tk to select an upstream image, such as :version/:rc
 c3tk_image="starkandwayne/c3tk:latest" # CONFIG_PATH/c3tk/{image,tag}
@@ -122,7 +122,8 @@ case "${cmd}" in
       "${c3tk_image}" tcpdump "${@}"
     ;;
   (tig)
-    docker run --rm -it \
+    docker_run \
+      -it \
       "${c3tk_image}" tig "${@}"
     ;;
   (nmap)
