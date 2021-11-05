@@ -6,7 +6,7 @@ build:
 	docker build . --platform linux/$$(uname -m) -t starkandwayne/c3tk:latest
 
 install:
-	./bin/install
+	./bin/c3tk install
 
 uninstall:
 	./bin/uninstall

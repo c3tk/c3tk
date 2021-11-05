@@ -6,17 +6,43 @@ docker_run() {
   exec docker run --rm --platform="linux/amd64" -w '/w' -v${PWD}:/w "${@}"
 }
 
-touch ~/.saferc ~/.vaultrc ~/.flyrc
+install_cmds() {
+  for _cmd in "${@}"
+  do
+    [[ -x ${INSTALL_PATH}/${cmd} ]] ||
+      ln -fs ${INSTALL_PATH}/c3tk ${INSTALL_PATH}/${cmd}
+  done
+}
+
+install() {
+  cp $0 "${INSTALL_PATH}/c3tk"
+  if (( $# == 0 ))
+  then
+    # TODO: Allow for install cmds list and/or groups to be specified
+    cmds=($(grep '^  (' $0 | tr -d '(' | tr -d ')'))
+    install_cmds
+    exit 0
+  fi
+}
 
 # Allow this script to be symlinked as the actual command name :)
 if [[ ${0//*\/} == "c3tk" ]] 
-then shift
-else cmd="${0//*\/}"
+then 
+  cmd=$1 
+  shift
+else 
+  cmd="${0//*\/}"
 fi
+
+INSTALL_PATH="${INSTALL_PATH:-/opt/local/bin}"
 
 # TODO: Use ~/.config/c3tk to select an upstream image, such as :version/:rc
 c3tk_image="starkandwayne/c3tk:latest"
 terraform_image="hashicorp/terraform:latest"
+
+touch ~/.saferc ~/.vaultrc ~/.flyrc
+
+[[ install != "${cmd}" ]] || install
 
 case "${cmd}" in 
   (shell)

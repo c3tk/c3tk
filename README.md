@@ -15,9 +15,9 @@ First install [Docker](https://www.docker.com/products/docker-desktop)
 
 ## How to Use
 
-Installation installs the following commands to `/usr/local/bin`.
+Installation installs the following commands to `/opt/local/bin`.
 
-Ensure that `/usr/local/bin` is in your path and then use these in your terminal:
+Ensure that `/opt/local/bin` is in your path and then use these in your terminal:
 
 * c3tk
 * aws
@@ -39,6 +39,12 @@ Ensure that `/usr/local/bin` is in your path and then use these in your terminal
 * terragrunt
 * tools
 * vault
+
+NOTE: You can override the installation directory by exporting the environment
+variable `INSTALL_PATH` like so:
+```
+export INSTALL_PATH="/usr/local/bin"
+```
 
 ## Notes
 
