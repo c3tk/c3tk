@@ -10,20 +10,21 @@ install_cmds() {
   for _cmd in "${@}"
   do
     [[ -x ${INSTALL_PATH}/${_cmd} ]] ||
-      sudo ln -fs ${INSTALL_PATH}/c3tk ${INSTALL_PATH}/${_cmd}
+      ln -fs ${INSTALL_PATH}/c3tk ${INSTALL_PATH}/${_cmd}
   done
 }
 
 install() {
-  sudo mkdir -p "${INSTALL_PATH}"
-  sudo cp $0 "${INSTALL_PATH}/c3tk"
+  set -x
+  mkdir -p "${INSTALL_PATH}" 
+  cp $0 "${INSTALL_PATH}/c3tk"
   if (( $# == 0 ))
   then
     # TODO: Allow for install cmds list and/or groups to be specified
     _cmds=($(grep '^  (' $0 | tr -d '(' | tr -d ')'))
     install_cmds ${_cmds[@]}
   fi
-  echo -e "Be sure to add /opt/local/bin to your path:\n\tPATH=\"/opt/local/bin/:\$PATH\""
+  echo -e "Be sure to add ${INSTALL_PATH} to your path:\n\texport PATH=\"${INSTALL_PATH}:\$PATH\""
   exit 0
 }
 
@@ -36,7 +37,8 @@ else
   cmd="${0//*\/}"
 fi
 
-INSTALL_PATH="${INSTALL_PATH:-/opt/local/bin}"
+INSTALL_PREFIX="${INSTALL_PATH:-/usr/local/bin}"
+INSTALL_PATH="${INSTALL_PREFIX}/c3tk/bin"
 
 # TODO: Use ~/.config/c3tk to select an upstream image, such as :version/:rc
 c3tk_image="starkandwayne/c3tk:latest"
