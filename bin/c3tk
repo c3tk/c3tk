@@ -15,7 +15,6 @@ install_cmds() {
 }
 
 install() {
-  set -x
   sudo mkdir -p "${INSTALL_PATH}"
   sudo cp $0 "${INSTALL_PATH}/c3tk"
   if (( $# == 0 ))
@@ -23,8 +22,9 @@ install() {
     # TODO: Allow for install cmds list and/or groups to be specified
     _cmds=($(grep '^  (' $0 | tr -d '(' | tr -d ')'))
     install_cmds ${_cmds[@]}
-    exit 0
   fi
+  echo -e "Be sure to add /opt/local/bin to your path:\n\tPATH=\"/opt/local/bin/:\$PATH\""
+  exit 0
 }
 
 # Allow this script to be symlinked as the actual command name :)
