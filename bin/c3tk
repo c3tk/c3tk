@@ -43,6 +43,10 @@ INSTALL_PATH="${INSTALL_PREFIX}/c3tk/bin"
 # TODO: Use ~/.config/c3tk to select an upstream image, such as :version/:rc
 c3tk_image="starkandwayne/c3tk:latest" # CONFIG_PATH/c3tk/{image,tag}
 terraform_image="hashicorp/terraform:latest" # CONFIG_PATH/terraform/{image,tag}
+vault_image="hashicorp/vault:latest" # CONFIG_PATH/vault/{image,tag}
+aws_image="amazon/aws-cli:latest" # CONFIG_PATH/aws-cli/{image,tag}
+gcloud_image="gcr.io/google.com/cloudsdktool/cloud-sdk:latest" # CONFIG_PATH/gcloud/{image,tag}
+azure_image="mcr.microsoft.com/azure-cli" # CONFIG_PATH/azure/{image,tag}
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
 
@@ -50,109 +54,91 @@ touch ~/.saferc ~/.vaultrc ~/.flyrc
 
 case "${cmd}" in 
   (shell)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/:/root \
       "${c3tk_image}" bash "${@}"
     ;;
   (aws)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.aws:/root/.aws \
-      "amazon/aws-cli" aws "${@}"
+      "${aws_image}" aws "${@}"
     ;;
   (az)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.azure:/root/.azure \
-      "mcr.microsoft.com/azure-cli" az "${@}"
+      "${azure_image}" az "${@}"
     ;;
   (bosh)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.bosh:/root/.bosh \
       "${c3tk_image}" bosh "${@}"
     ;;
   (cf)
-    docker_run \
-      -it \
+    docker_run -it \
       -v :/root/.cf \
       "${c3tk_image}" cf "${@}"
     ;;
   (cc-me)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" cc-me "${@}"
     ;;
   (sipcalc)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" sipcalc "${@}"
     ;;
   (whois)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" whois "${@}"
     ;;
   (netcat)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" netcat "${@}"
     ;;
   (terraform)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${terraform_image}" terraform "${@}"
     ;;
   (terragrunt)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "alpine/terragrunt:latest" terragrunt "${@}"
     ;;
   (tcpdump)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" tcpdump "${@}"
     ;;
   (tig)
-    docker_run \
-      -it \
+    docker_run -it \
       "${c3tk_image}" tig "${@}"
     ;;
   (nmap)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" nmap "${@}"
     ;;
   (credhub)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.credhub:/root/.credhub \
       "${c3tk_image}" credhub "${@}"
     ;;
   (gpg)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" gpg "${@}"
     ;;
   (govc)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "vmware/govc:latest" /govc "${@}"
     ;;
   (genesis)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.ssh:/root/.ssh \
       -v ~/.saferc:/root/.saferc \
       -v ~/.vaultrc:/root/vaultrc \
@@ -165,69 +151,59 @@ case "${cmd}" in
     docker_run \
       -it \
       -v ~/.gcp:/root/.gcp \
-      "gcr.io/google.com/cloudsdktool/cloud-sdk:latest" gcloud "${@}"
+      "${gcloud_image}" gcloud "${@}"
     ;;
   (gsutil)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.gcp:/root/.gcp \
-      "gcp-tools:latest" gsutil "${@}"
+      "${gcloud_image}" gsutil "${@}"
     ;;
   (jq)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" /bin/jq "${@}"
     ;;
   (yq)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" /bin/yq "${@}"
     ;;
   (xq)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" xq "${@}"
     ;;
   (fly)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.flyrc:/root/.flyrc \
       "${c3tk_image}" fly "${@}"
     ;;
   (k9s)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.kube:/root/.kube \
       -v ~/.config:/root/config \
       "${c3tk_image}" k9s "${@}"
     ;;
   (kubectl)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.kube:/root/.kube \
       "${c3tk_image}" kubectl "${@}"
     ;;
   (spruce)
-    docker_run \
-      -i \
+    docker_run -i \
       --log-driver=none -a stdin -a stdout -a stderr \
       "${c3tk_image}" spruce "${@}"
     ;;
   (safe)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.saferc:/root/.saferc \
       -v ~/.vaultrc:/root/.vaultrc \
       "${c3tk_image}" safe "${@}"
     ;;
   (vault)
-    docker_run \
-      -it \
+    docker_run -it \
       -v ~/.vaultrc:/root/.vaultrc \
-      "${c3tk_image}" vault "${@}"
+      "${vault_image}" vault "${@}"
     ;;
 esac
 
