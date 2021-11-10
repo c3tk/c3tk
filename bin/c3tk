@@ -35,10 +35,10 @@ else
 fi
 
 true \
-  "${CONFIG_PATH:=$HOME/.config/c3tk}" \
-  "${INSTALL_PREFIX:=/usr/local/bin}" \
+  "${CONFIG_PATH:="$HOME/.config/c3tk"}" \
+  "${INSTALL_PREFIX:="/usr/local/bin"}" \
   "${INSTALL_PATH:="${INSTALL_PREFIX}/c3tk/bin"}" \
-  "${IMAGE_TAG:=latest}"
+  "${IMAGE_TAG:="${TAG:-latest}"}"
 
 [[ ${DEBUG} == "" ]] || set -xv
 
