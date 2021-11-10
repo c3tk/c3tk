@@ -21,24 +21,26 @@ Ensure that `/usr/local/bin/c3tk/bin` is in your path and then use these in your
 
 * c3tk
 * aws
+* az
 * bosh
 * cc-me
 * cf
 * credhub
 * fly
 * gcloud
-* govc
 * genesis
+* govc
+* govc
 * gsutil
 * jq
 * k9s
 * kubectl
 * run-help
 * safe
+* shell
 * spruce
 * terraform
 * terragrunt
-* tools
 * vault
 
 NOTE: You can override the installation directory by exporting the environment
