@@ -1,1 +1,3 @@
 add ruby image=ruby stream
+add gem image=ruby stream
+add irb image=ruby stream

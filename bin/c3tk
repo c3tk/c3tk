@@ -124,7 +124,7 @@ case "${cmd}" in
     if [[ -s "${CONFIG_PATH}/${cmd}" ]]
     then
       _image=$(awk -F= '/image/{print $2}' "${CONFIG_PATH}/${cmd}")
-      _tag=$(awk -F= '/tag/{print $2}' "${CONFIG_PATH}/${cmd}")
+      _tag=${TAG:-$(awk -F= '/tag/{print $2}' "${CONFIG_PATH}/${cmd}")}
       _configs=($(awk -F= '/configs/{print $2}' "${CONFIG_PATH}/${cmd}" | tr ',' ' '))
       _cmd=($(awk -F= '/cmd/{print $2}' "${CONFIG_PATH}/${cmd}" ))
       grep -q 'stream' "${CONFIG_PATH}/${cmd}" &&
