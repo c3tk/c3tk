@@ -1,0 +1,4 @@
+add terraform image=hashicorp/terraform tty stream
+add terragrunt image=alpine/terragrunt tty stream
+add vault image=hashicorp/vault configs=.vaultrc
+add safe image=starkandwayne/c3tk configs=.saferc,.vaultrc

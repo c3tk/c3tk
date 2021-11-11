@@ -1,0 +1,11 @@
+add jq image=wayneeseguin/c3tk stream
+add yq image=wayneeseguin/c3tk stream
+add xq image=wayneeseguin/c3tk stream
+add gpg image=wayneeseguin/c3tk tty stream
+add tcpdump image=wayneeseguin/c3tk tty stream
+add tig image=wayneeseguin/c3tk tty stream
+add nmap image=wayneeseguin/c3tk tty stream
+add gpg image=wayneeseguin/c3tk tty stream
+add sipcalc image=wayneeseguin/c3tk tty stream
+add whois image=wayneeseguin/c3tk tty stream
+add netcat image=wayneeseguin/c3tk tty stream

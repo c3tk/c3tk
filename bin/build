@@ -39,58 +39,9 @@ cmd=spruce ; echo "Installing \`${cmd}\`..."
 url="https://github.com/geofffranks/spruce/releases/latest/download/spruce-linux-amd64"
 curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
-cmd=cf7 ; echo "Installing \`${cmd}\`..."
-url="https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v7&source=github"
-curl -sL "${url}" | tar -zx 
-mv "${cmd}" "${installPath}/${cmd}" && chmod_ln "${cmd}"
-cmd=cf ; echo "Installing \`${cmd}\`..."
-mv "${cmd}" "${installPath}/${cmd}" && chmod_ln "${cmd}"
-
-cmd=bosh ; echo "Installing \`${cmd}\`..."
-v=$(curl -s https://github.com/cloudfoundry/bosh-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
-url="https://github.com/cloudfoundry/bosh-cli/releases/download/${v}/bosh-cli-${v/v/}-linux-amd64"
-curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
-
-cmd=boss ; echo "Installing \`${cmd}\`..."
-https://github.com/releases/latest
-v=$(curl -s https://github.com/blacksmith-community/boss/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
-url="https://github.com/blacksmith-community/boss/releases/download/${v}/boss-linux-amd64"
-curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
-
-cmd=cc-me ; echo "Installing \`${cmd}\`..."
-url="https://raw.githubusercontent.com/jhunt/cc-me/master/cc-me"
- curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
-
-cmd=credhub ; echo "Installing \`${cmd}\`..."
-v=$(curl -s https://github.com/cloudfoundry/credhub-cli/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
-url="https://github.com/cloudfoundry/credhub-cli/releases/download/${v}/credhub-linux-${v}.tgz"
-curl -sL "${url}" | tar -zx && mv "${cmd}" "${installPath}/${cmd}" && chmod_ln "${cmd}"
-
-cmd="${vault}"; echo "Installing \`${cmd}\`..."
-v=$(curl -s https://github.com/hashicorp/vault/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}' | tr -d 'v')
-file="vault_${v}_linux_amd64.zip"
-url="https://releases.hashicorp.com/vault/${v}/${file}"
-curl -sLO "${url}" && unzip "${file}" && mv "${cmd}" "${installPath}/${cmd}" &&
-  chmod_ln "${cmd}"
-rm -f "${file}"
-
-cmd=genesis ; echo "Installing \`${cmd}\`..."
-url="https://github.com/genesis-community/genesis/releases/latest/download/genesis"
-curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
-
 cmd=kubectl ; echo "Installing \`${cmd}\`..."
 v=$(curl -s https://github.com/kubernetes/kubernetes/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
 url="https://storage.googleapis.com/kubernetes-release/release/${v}/bin/linux/amd64/kubectl"
 curl -fsSL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
-
-cmd=fly ; echo "Installing \`${cmd}\`..."
-v=$(curl -s https://github.com/concourse/concourse/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
-url="https://github.com/concourse/concourse/releases/download/${v}/fly-${v/v/}-linux-amd64.tgz"
-curl -fsSL "${url}" | tar -zx && mv "${cmd}" "${installPath}/${cmd}"
-# NOTE: for `fly` we use a wrapper script in /usr/local/bin/
-
-cmd=k9s ; echo "Installing \`${cmd}\`..."
-url="https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz"
-curl -sL "${url}" | tar -zx && mv "${cmd}" "${installPath}/${cmd}" && chmod_ln "${cmd}"
 
 exit 0

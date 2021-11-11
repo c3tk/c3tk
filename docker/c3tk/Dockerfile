@@ -18,7 +18,5 @@ WORKDIR /root
 ADD ./bin/build /root/build
 RUN /root/build
 
-ADD ./bin/fly-wrapper /usr/local/bin/fly
-
 CMD /bin/bash
 

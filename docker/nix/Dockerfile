@@ -38,7 +38,5 @@ ADD bin/nix-install /root/nix-install
 
 RUN /root/nix-install
 
-ADD ./bin/fly-wrapper /bin/fly
-
 CMD /bin/bash
 

@@ -3,7 +3,7 @@
 all: build install
 
 build:
-	docker build . --platform linux/amd64 -t starkandwayne/c3tk:latest
+	docker build . --platform linux/amd64 -f ./docker/c3tk/Dockerfile -t wayneeseguin/c3tk:latest
 
 install:
 	./bin/c3tk install
@@ -11,7 +11,10 @@ install:
 uninstall:
 	./bin/uninstall
 
+configs:
+	mkdir -p ~/.config/c3tk/config && cp config/*.c3tk ~/.config/c3tk/config/
+
 push:
-	docker push starkandwayne/c3tk:latest
+	docker push wayneeseguin/c3tk:latest
 
 publish: build push

@@ -8,40 +8,47 @@ and consistently.
 
 First install [Docker](https://www.docker.com/products/docker-desktop)
 
-## Installation
+## Installation Via GitHub
 
-1. Download the [c3tk repo](https://github.com/starkandwayne/c3tk) 
-2. Run `make install`
+```
+curl -sL https://raw.githubusercontent.com/starkandwayne/c3tk/main/bin/c3tk -o c3tk &&  
+  chmod 0755 ./c3tk && sudo ./c3tk install
+```
+then add the directory to your `PATH`:
+```
+echo -e '\nPATH="/usr/local/bin/c3tk/bin:$${PATH}"' >> ~/.profile
+```
+Then open a new shell and start adding the commands you are interested in.
 
-## How to Use
+## Configuration
 
-Installation installs the following commands to `/usr/local/bin/c3tk/bin`.
+Individual commands may be added from the command line as follows,
+```
+c3tk add <name> <image>
+```
+Run `c3tk add` to see a full description of the help output.
 
-Ensure that `/usr/local/bin/c3tk/bin` is in your path and then use these in your terminal:
+So for example to add the aws cli we run:
+```
+c3tk add aws image=amazon/aws-cli configs=.aws
+```
 
-* c3tk
-* aws
-* az
-* bosh
-* cc-me
-* cf
-* credhub
-* fly
-* gcloud
-* genesis
-* govc
-* govc
-* gsutil
-* jq
-* k9s
-* kubectl
-* run-help
-* safe
-* shell
-* spruce
-* terraform
-* terragrunt
-* vault
+Alternatively we can install sets of commands via `.c3tk` files. First place the
+files into your `~/.config/c3tk/config` directory such as
+```
+ls ~/.config/c3tk/config
+clouds.c3tk
+hashicorp.c3tk
+k8s.c3tk
+```
+Then run `c3tk configure` and `c3tk` will install the commands referenced in these
+files.
+
+This will install links for the commands in the `INSTALL_PATH`, which defaults
+to `/usr/local/bin/c3tk/bin`.
+
+Ensure that `/usr/local/bin/c3tk/bin` is in your path and then use the commands
+in your terminal!
 
 NOTE: You can override the installation directory by exporting the environment
 variable `INSTALL_PATH` like so:
@@ -50,11 +57,8 @@ export INSTALL_PATH="/usr/local/bin" ./
 
 ```
 
-## Notes
+## Development Installation Via Repository
 
-`fly` can take a little longer to run depending on network connectivity and 
-bandwith to the concourse server. This is because it will run 
-`fly -t $target sync` before running the acutal command to ensure that the 
-cli version matches the target version. We do this because otherwise the fly
-command is programmed to unhelpfully choose to not run.
+1. Download the [c3tk repo](https://github.com/wayneeseguin/c3tk) 
+2. Run `make `
 

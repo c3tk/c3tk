@@ -9,15 +9,15 @@ install_cmds() {
 }
 
 install() {
-  mkdir -p "${INSTALL_PATH}" "${CONFIG_PATH}"
+  mkdir -p "${INSTALL_PATH}" "${CONFIG_PATH}"/{cmds,config}
   cp $0 "${INSTALL_PATH}/c3tk"
   if (( $# == 0 ))
   then
-    # TODO: Allow for install cmds list and/or groups to be specified
-    _cmds=($(grep '^  (' $0 | tr -d '(' | tr -d ')'))
+    _cmds=($(find "${CONFIG_PATH}/cmds" -mindepth 1 -maxdepth 1 -type f | sed -e "s#${CONFIG_PATH}\/cmds##"))
     install_cmds ${_cmds[@]}
   fi
   echo -e "Be sure to add ${INSTALL_PATH} to your path:\n\texport PATH=\"${INSTALL_PATH}:\$PATH\""
+  echo "install_path=${INSTALL_PATH}" > ${CONFIG_PATH}/install
   exit 0
 }
 
@@ -25,14 +25,83 @@ docker_run() {
   exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w "${@}"
 }
 
+add_help() {
+  echo <<-HELP
+c3tk add <name> image=<img> [tag=<tag>] [configs=.<a>,.<b>,...] [tty] [stream]
+
+Where:
+   name    - command name to expose to the host system
+   tag     - image tag to use, defaults to :latest
+   image   - docker compatible registry url
+   configs - comma separated list of config files to map via -v
+   tty     - if present will add '-t' 
+   stream  - if present will add '--log-driver=none -a stdin -a stdout -a stderr'
+
+HELP
+}
+
+add_cmd() {
+  (( $# > 1 )) || fail "$(add_usage)"
+
+  local _cmd _image _tag
+  _cmd="$1" && shift || fail "$(add_usage)"
+  # TODO: If empty check if definition file already exists, if so symlink.
+  if (( $# > 0 ))
+  then
+    for arg in "${@}" 
+    do 
+      case "${arg}" in
+        (image=*)
+          _image=$(echo ${arg} | awk -F= '{print $2}')
+          ;;
+        (tag=*)
+          _tag=$(echo ${arg} | awk -F= '{print $2}')
+          [[ -n "${_tag}" ]] || _tag="latest"
+          ;;
+      esac
+      echo "${arg}" >> ${CONFIG_PATH}/${_cmd}
+    done
+    [[ -n "${_image}" ]] || fail "Image Required"
+  else
+    if [[ -s ${CONFIG_PATH}/${_cmd} ]]
+    then
+      _image=$(awk -F= '/image=/{print $2}' ${CONFIG_PATH}/${cmd})
+      _tag=$(awk -F= '/tag=/{print $2}' ${CONFIG_PATH}/${cmd})
+    fi
+    [[ -n "${_image}" ]] || fail "$(add_usage)"
+  fi
+  ln -fs ${INSTALL_PATH}/c3tk ${INSTALL_PATH}/${_cmd}
+  docker pull ${_image}:${_tag:-latest}
+}
+
+configure() {
+  local _config _group
+  for _config in $(find ~/.config/c3tk/config  -iname '*.c3tk')
+  do
+    _group=$(basename ${_config} '.c3tk')
+    while read _line 
+    do 
+      echo " ${_group} => ${_line}"
+      $0 $_line
+    done < <(cat ${_config} | sed -e '/^[[:blank:]]*#/d;s/#.*//')
+  done
+}
+
+fetch_add() {
+  # 1. Curl URL to .c3tk file
+  # 2. Configure 
+  true
+}
+
+shell_for() {
+  [[ -s "${CONFIG_PATH}/$1" ]] || fail "$1 not added."
+  image=$(awk -F= '/image=/{print $2}' ${CONFIG_PATH}/$1)
+  docker_run -it -v $HOME/:/root "${image}" bash "${@}"
+}
+
+
 # Allow this script to be symlinked as the actual command name :)
-cmd="$1"
-if [[ ${0//*\/} == "c3tk" ]] 
-then 
-  shift
-else 
-  cmd="${0//*\/}"
-fi
+cmd="$1" ; [[ ${0//*\/} == "c3tk" ]]  && shift || cmd="${0//*\/}"
 
 true \
   "${CONFIG_PATH:="$HOME/.config/c3tk"}" \
@@ -40,202 +109,38 @@ true \
   "${INSTALL_PATH:="${INSTALL_PREFIX}/c3tk/bin"}" \
   "${IMAGE_TAG:="${TAG:-latest}"}"
 
-[[ ${DEBUG} == "" ]] || set -xv
-
-# TODO: Use ~/.config/c3tk to select an upstream image, such as :version/:rc
-image_for() {
-  case "$1" in
-    (c3tk) # CONFIG_PATH/c3tk/{image,tag}
-      echo "starkandwayne/c3tk:${IMAGE_TAG}"
-      ;;
-    (aws) # CONFIG_PATH/aws-cli/{image,tag}
-      echo "amazon/aws-cli:${IMAGE_TAG}"
-      ;;
-    (azure) # CONFIG_PATH/azure/{image,tag}
-      echo "mcr.microsoft.com/azure-cli:${IMAGE_TAG}"
-      ;;
-    (gcp) # CONFIG_PATH/gcp/{image,tag}
-      echo "gcr.io/google.com/cloudsdktool/cloud-sdk:${IMAGE_TAG}"
-      ;;
-    (govc) # CONFIG_PATH/govc/{image,tag}
-      echo "vmware/govc:${IMAGE_TAG}"
-      ;;
-    (ruby) # CONFIG_PATH/govc/{image,tag}
-      echo "ruby:${IMAGE_TAG}"
-      ;;
-    (terraform) # CONFIG_PATH/terraform/{image,tag}
-      echo "hashicorp/terraform:${IMAGE_TAG}"
-      ;;
-    (terragrunt) # CONFIG_PATH/terraform/{image,tag}
-      echo "alpine/terragrunt:${IMAGE_TAG}"
-      ;;
-    (vault) # CONFIG_PATH/vault/{image,tag}
-      echo "hashicorp/vault:${IMAGE_TAG}"
-      ;;
-  esac
-}
+[[ "" == "${DEBUG}" ]] || set -xv
 
 touch ~/.saferc ~/.vaultrc ~/.flyrc
 
 [[ install != "${cmd}" ]] || install
 
 case "${cmd}" in 
-  (shell)
-    docker_run -it \
-      -v ~/:/root \
-      "$(image_for c3tk)" bash "${@}"
-    ;;
-  (aws)
-    docker_run -it \
-      -v ~/.aws:/root/.aws \
-      "$(image_for aws)" aws "${@}"
-    ;;
-  (az)
-    docker_run -it \
-      -v ~/.azure:/root/.azure \
-      "$(image_for azure)" az "${@}"
-    ;;
-  (bosh)
-    docker_run -it \
-      -v ~/.bosh:/root/.bosh \
-      "$(image_for c3tk)" bosh "${@}"
-    ;;
-  (cf)
-    docker_run -it \
-      -v :/root/.cf \
-      "$(image_for c3tk)" cf "${@}"
-    ;;
-  (cc-me)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" cc-me "${@}"
-    ;;
-  (sipcalc)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" sipcalc "${@}"
-    ;;
-  (whois)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" whois "${@}"
-    ;;
-  (netcat)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" netcat "${@}"
-    ;;
-  (terraform)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for terraform)" terraform "${@}"
-    ;;
-  (terragrunt)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for terragrunt)" terragrunt "${@}"
-    ;;
-  (tcpdump)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" tcpdump "${@}"
-    ;;
-  (tig)
-    docker_run -it \
-      "$(image_for c3tk)" tig "${@}"
-    ;;
-  (nmap)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" nmap "${@}"
-    ;;
-  (credhub)
-    docker_run -it \
-      -v ~/.credhub:/root/.credhub \
-      "$(image_for c3tk)" credhub "${@}"
-    ;;
-  (gpg)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" gpg "${@}"
-    ;;
-  (govc)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for govc)" /govc "${@}"
-    ;;
-  (genesis)
-    docker_run -it \
-      -v ~/.ssh:/root/.ssh \
-      -v ~/.saferc:/root/.saferc \
-      -v ~/.vaultrc:/root/vaultrc \
-      -v ~/.credhub:/root/.credhub \
-      -v ~/.bosh:/root/.bosh \
-      -v ~/.cf:/root/.cf \
-      "$(image_for c3tk)" genesis "${@}"
-    ;;
-  (gcloud)
-    docker_run \
-      -it \
-      -v ~/.gcp:/root/.gcp \
-      "$(image_for gcp)" gcloud "${@}"
-    ;;
-  (gsutil)
-    docker_run -it \
-      -v ~/.gcp:/root/.gcp \
-      "$(image_for gcp)" gsutil "${@}"
-    ;;
-  (jq)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" jq "${@}"
-    ;;
-  (yq)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" yq "${@}"
-    ;;
-  (xq)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" xq "${@}"
-    ;;
-  (fly)
-    docker_run -it \
-      -v ~/.flyrc:/root/.flyrc \
-      "$(image_for c3tk)" fly "${@}"
-    ;;
-  (k9s)
-    docker_run -it \
-      -v ~/.kube:/root/.kube \
-      -v ~/.config:/root/config \
-      "$(image_for c3tk)" k9s "${@}"
-    ;;
-  (kubectl)
-    docker_run -it \
-      -v ~/.kube:/root/.kube \
-      "$(image_for c3tk)" kubectl "${@}"
-    ;;
-  (ruby)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for ruby)" ruby "${@}"
-    ;;
-  (spruce)
-    docker_run -i \
-      --log-driver=none -a stdin -a stdout -a stderr \
-      "$(image_for c3tk)" spruce "${@}"
-    ;;
-  (safe)
-    docker_run -it \
-      -v ~/.saferc:/root/.saferc \
-      -v ~/.vaultrc:/root/.vaultrc \
-      "$(image_for c3tk)" safe "${@}"
-    ;;
-  (vault)
-    docker_run -it \
-      -v ~/.vaultrc:/root/.vaultrc \
-      "$(image_for vault)" vault "${@}"
+  (configure) configure "${@}" ;;
+  (fetch) fetch_add "${@}" ;;
+  (add) add_cmd "$@" ;;
+  (shell) shell_for ${cmd} ;;
+  (*)
+    if [[ -s "${CONFIG_PATH}/${cmd}" ]]
+    then
+      _image=$(awk -F= '/image/{print $2}' "${CONFIG_PATH}/${cmd}")
+      _tag=$(awk -F= '/tag/{print $2}' "${CONFIG_PATH}/${cmd}")
+      _configs=($(awk -F= '/configs/{print $2}' "${CONFIG_PATH}/${cmd}" | tr ',' ' '))
+      _cmd=($(awk -F= '/cmd/{print $2}' "${CONFIG_PATH}/${cmd}" ))
+      grep -q 'stream' "${CONFIG_PATH}/${cmd}" &&
+        _c="${_c} --log-driver=none -a stdin -a stdout -a stderr "
+      grep -q 'tty' "${CONFIG_PATH}/${cmd}" && 
+        _c="${_c} -t "
+
+      for _config in "${_configs[@]}"
+      do _c="${_c} -v $HOME/${_config}:/root/${_config}"
+      done
+
+      docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" "${@}"
+    else
+      fail "${cmd} not found, do you need to \`add\` it?"
+    fi
+
     ;;
 esac
 
