@@ -98,55 +98,95 @@ fetch_add() {
   true
 }
 
+image_for() {
+  local cmd="${1}"
+
+  if [ -z "${cmd}" ]
+    then
+      echo "wayneeseguin/c3tk"
+    else
+      awk -F= '/image=/{print $2}' ${CONFIG_PATH}/${cmd}
+  fi
+}
+
 shell_for() {
-  [[ -s "${CONFIG_PATH}/$1" ]] || fail "$1 not added."
-  image=$(awk -F= '/image=/{print $2}' ${CONFIG_PATH}/$1)
+  local cmd="${1}"
+  shift
+
+  [[ "" == "${cmd}" ]] || cmd_exists "${cmd}" || unknown "${cmd}"
+  image=$(image_for "${cmd}")
   docker_run -it -v $HOME/:/root "${image}" bash "${@}"
 }
 
+run_cmd() {
+  local cmd="${1}"
+  shift
 
-# Allow this script to be symlinked as the actual command name :)
-cmd="$1" ; [[ ${0//*\/} == "c3tk" ]]  && shift || cmd="${0//*\/}"
+  _image=$(awk -F= '/image/{print $2}' "${CONFIG_PATH}/${cmd}")
+  _tag=${TAG:-$(awk -F= '/tag/{print $2}' "${CONFIG_PATH}/${cmd}")}
+  _configs=($(awk -F= '/configs/{print $2}' "${CONFIG_PATH}/${cmd}" | tr ',' ' '))
+  _cmd=($(awk -F= '/cmd/{print $2}' "${CONFIG_PATH}/${cmd}" ))
+  grep -q 'stream' "${CONFIG_PATH}/${cmd}" &&
+    _c="${_c} --log-driver=none -a stdin -a stdout -a stderr "
+  grep -q 'tty' "${CONFIG_PATH}/${cmd}" && 
+    _c="${_c} -t "
 
-true \
-  "${CONFIG_PATH:="$HOME/.config/c3tk"}" \
-  "${INSTALL_PREFIX:="/usr/local/bin"}" \
-  "${INSTALL_PATH:="${INSTALL_PREFIX}/c3tk/bin"}" \
-  "${IMAGE_TAG:="${TAG:-latest}"}"
+  for _config in "${_configs[@]}"
+  do _c="${_c} -v $HOME/${_config}:/root/${_config}"
+  done
 
-[[ "" == "${DEBUG}" ]] || set -xv
+  docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" "${@}"
+}
 
-touch ~/.saferc ~/.vaultrc ~/.flyrc
+cmd_exists() {
+  local cmd="${1}"
 
-[[ install != "${cmd}" ]] || install
+  [[ -s "${CONFIG_PATH}/${cmd}" ]]
+}
 
-case "${cmd}" in 
-  (configure) configure "${@}" ;;
-  (fetch) fetch_add "${@}" ;;
-  (add) add_cmd "$@" ;;
-  (shell) shell_for ${cmd} ;;
-  (*)
-    if [[ -s "${CONFIG_PATH}/${cmd}" ]]
-    then
-      _image=$(awk -F= '/image/{print $2}' "${CONFIG_PATH}/${cmd}")
-      _tag=${TAG:-$(awk -F= '/tag/{print $2}' "${CONFIG_PATH}/${cmd}")}
-      _configs=($(awk -F= '/configs/{print $2}' "${CONFIG_PATH}/${cmd}" | tr ',' ' '))
-      _cmd=($(awk -F= '/cmd/{print $2}' "${CONFIG_PATH}/${cmd}" ))
-      grep -q 'stream' "${CONFIG_PATH}/${cmd}" &&
-        _c="${_c} --log-driver=none -a stdin -a stdout -a stderr "
-      grep -q 'tty' "${CONFIG_PATH}/${cmd}" && 
-        _c="${_c} -t "
+env_setup() {
+  true \
+    "${CONFIG_PATH:="$HOME/.config/c3tk"}" \
+    "${INSTALL_PREFIX:="/usr/local/bin"}" \
+    "${INSTALL_PATH:="${INSTALL_PREFIX}/c3tk/bin"}" \
+    "${IMAGE_TAG:="${TAG:-latest}"}"
 
-      for _config in "${_configs[@]}"
-      do _c="${_c} -v $HOME/${_config}:/root/${_config}"
-      done
+  [[ "" == "${DEBUG}" ]] || set -xv
 
-      docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" "${@}"
-    else
-      fail "${cmd} not found, do you need to \`add\` it?"
-    fi
+  touch ~/.saferc ~/.vaultrc ~/.flyrc
+}
 
-    ;;
-esac
+unknown() {
+  fail "${1} not found, do you need to \`add\` it?"
+}
 
-exit 0
+dispatch_cmd() {
+  local cmd="${1}"
+  shift
+
+  case "${cmd}" in 
+    (configure) configure "${@}" ;;
+    (fetch) fetch_add "${@}" ;;
+    (add) add_cmd "$@" ;;
+    (install) install ;;
+    (shell) shell_for ${@} ;;
+    (*)
+      cmd_exists ${cmd} || unknown "${cmd}"
+
+      run_cmd ${cmd} ${@}
+      ;;
+  esac
+}
+
+main() {
+  env_setup
+
+  # Allow this script to be symlinked as the actual command name :)
+  cmd="$1" ; [[ ${0//*\/} == "c3tk" ]]  && shift || cmd="${0//*\/}"
+
+  dispatch_cmd "${cmd}" $@
+  
+  exit 0
+}
+
+main $@
