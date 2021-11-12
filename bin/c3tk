@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+fail() {
+  echo "FAIL: $*" >&2
+  exit 1
+}
+
 install_cmds() {
   for _cmd in "${@}"
   do
@@ -25,8 +30,8 @@ docker_run() {
   exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w "${@}"
 }
 
-add_help() {
-  echo <<-HELP
+add_usage() {
+  cat <<-HELP
 c3tk add <name> image=<img> [tag=<tag>] [configs=.<a>,.<b>,...] [tty] [stream]
 
 Where:
