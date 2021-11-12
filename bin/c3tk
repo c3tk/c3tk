@@ -98,9 +98,23 @@ fetch_add() {
   true
 }
 
+image_for() {
+  local cmd="${1}"
+
+  if [ -z "${cmd}" ]
+    then
+      echo "wayneeseguin/c3tk"
+    else
+      awk -F= '/image=/{print $2}' ${CONFIG_PATH}/${cmd}
+  fi
+}
+
 shell_for() {
-  cmd_exists "${1}" || fail "$1 not added."
-  image=$(awk -F= '/image=/{print $2}' ${CONFIG_PATH}/$1)
+  local cmd="${1}"
+  shift
+
+  [[ "" == "${cmd}" ]] || cmd_exists "${cmd}" || fail "${cmd} not added."
+  image=$(image_for "${cmd}")
   docker_run -it -v $HOME/:/root "${image}" bash "${@}"
 }
 
@@ -151,7 +165,7 @@ dispatch_cmd() {
     (fetch) fetch_add "${@}" ;;
     (add) add_cmd "$@" ;;
     (install) install ;;
-    (shell) shell_for ${cmd} ;;
+    (shell) shell_for ${@} ;;
     (*)
       cmd_exists ${cmd} || fail "${cmd} not found, do you need to \`add\` it?"
 
