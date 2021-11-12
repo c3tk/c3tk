@@ -101,7 +101,7 @@ fetch_add() {
 image_for() {
   local cmd="${1}"
 
-  if [ -z "${cmd}" ]
+  if [[ -z "${cmd}" ]]
     then
       echo "wayneeseguin/c3tk"
     else
