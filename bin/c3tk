@@ -25,7 +25,7 @@ install() {
     _cmds=($(installed_cmds))
     install_cmds ${_cmds[@]}
   fi
-  echo -e "Be sure to add ${INSTALL_PATH} to your path:\n\texport PATH=\"${INSTALL_PATH}:\$PATH\""
+  echo -e "\nAdd ${INSTALL_PATH} to your PATH:\n\n\texport PATH=\"${INSTALL_PATH}:\$PATH\"\n"
   echo "install_path=${INSTALL_PATH}" > ${CONFIG_PATH}/install
   exit 0
 }

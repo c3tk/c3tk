@@ -5,7 +5,7 @@ all: build install
 build:
 	docker build . --platform linux/amd64 -f ./docker/c3tk/Dockerfile -t wayneeseguin/c3tk:latest
 
-install: c3tk configs
+install: configs c3tk 
 
 c3tk:
 	./bin/c3tk install
