@@ -13,12 +13,16 @@ install_cmds() {
   done
 }
 
+installed_cmds() {
+  find "${CONFIG_PATH}/cmds" -mindepth 1 -maxdepth 1 -type f | sed -e "s#${CONFIG_PATH}/cmds/##" | sort
+}
+
 install() {
   mkdir -p "${INSTALL_PATH}" "${CONFIG_PATH}"/{cmds,config}
   cp $0 "${INSTALL_PATH}/c3tk"
   if (( $# == 0 ))
   then
-    _cmds=($(find "${CONFIG_PATH}/cmds" -mindepth 1 -maxdepth 1 -type f | sed -e "s#${CONFIG_PATH}\/cmds##"))
+    _cmds=($(installed_cmds))
     install_cmds ${_cmds[@]}
   fi
   echo -e "Be sure to add ${INSTALL_PATH} to your path:\n\texport PATH=\"${INSTALL_PATH}:\$PATH\""
@@ -28,6 +32,23 @@ install() {
 
 docker_run() {
   exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w "${@}"
+}
+
+usage() {
+  cat <<-USAGE
+c3tk <cmd> [OPTIONS|ARGS]
+
+Where cmd is either one of:
+  add <name> <image>
+  configure
+  fetch <url-to-.c3tk-file>
+  install
+  list
+  rm <name>
+  shell <name>
+  X - where X is a cmd that was added via `add` or configured via .c3tk files
+
+USAGE
 }
 
 add_usage() {
@@ -64,19 +85,32 @@ add_cmd() {
           [[ -n "${_tag}" ]] || _tag="latest"
           ;;
       esac
-      echo "${arg}" >> ${CONFIG_PATH}/${_cmd}
+      echo "${arg}" >> ${CONFIG_PATH}/cmds/${_cmd}
     done
     [[ -n "${_image}" ]] || fail "Image Required"
   else
-    if [[ -s ${CONFIG_PATH}/${_cmd} ]]
+    if [[ -s ${CONFIG_PATH}/cmds/${_cmd} ]]
     then
-      _image=$(awk -F= '/image=/{print $2}' ${CONFIG_PATH}/${cmd})
-      _tag=$(awk -F= '/tag=/{print $2}' ${CONFIG_PATH}/${cmd})
+      _image=$(awk -F= '/image=/{print $2}' ${CONFIG_PATH}/cmds/${cmd})
+      _tag=$(awk -F= '/tag=/{print $2}' ${CONFIG_PATH}/cmds/${cmd})
     fi
     [[ -n "${_image}" ]] || fail "$(add_usage)"
   fi
   ln -fs ${INSTALL_PATH}/c3tk ${INSTALL_PATH}/${_cmd}
   docker pull ${_image}:${_tag:-latest}
+}
+
+rm_cmd() {
+  for _cmd in "${@}"
+  do
+    if [[ -s ${CONFIG_PATH}/cmds/${_cmd} ]] 
+    then rm ${CONFIG_PATH}/cmds/${_cmd} 
+    fi
+
+    if [[ -L ${INSTALL_PATH}/${_cmd} ]] 
+    then  rm ${INSTALL_PATH}/${_cmd}
+    fi
+  done
 }
 
 configure() {
@@ -105,7 +139,7 @@ image_for() {
     then
       echo "wayneeseguin/c3tk"
     else
-      awk -F= '/image=/{print $2}' ${CONFIG_PATH}/${cmd}
+      awk -F= '/image=/{print $2}' ${CONFIG_PATH}/cmds/${cmd}
   fi
 }
 
@@ -122,13 +156,13 @@ run_cmd() {
   local cmd="${1}"
   shift
 
-  _image=$(awk -F= '/image/{print $2}' "${CONFIG_PATH}/${cmd}")
-  _tag=${TAG:-$(awk -F= '/tag/{print $2}' "${CONFIG_PATH}/${cmd}")}
-  _configs=($(awk -F= '/configs/{print $2}' "${CONFIG_PATH}/${cmd}" | tr ',' ' '))
-  _cmd=($(awk -F= '/cmd/{print $2}' "${CONFIG_PATH}/${cmd}" ))
-  grep -q 'stream' "${CONFIG_PATH}/${cmd}" &&
+  _image=$(awk -F= '/image/{print $2}' "${CONFIG_PATH}/cmds/${cmd}")
+  _tag=${TAG:-$(awk -F= '/tag/{print $2}' "${CONFIG_PATH}/cmds/${cmd}")}
+  _configs=($(awk -F= '/configs/{print $2}' "${CONFIG_PATH}/cmds/${cmd}" | tr ',' ' '))
+  _cmd=($(awk -F= '/cmd/{print $2}' "${CONFIG_PATH}/cmds/${cmd}" ))
+  grep -q 'stream' "${CONFIG_PATH}/cmds/${cmd}" &&
     _c="${_c} --log-driver=none -a stdin -a stdout -a stderr "
-  grep -q 'tty' "${CONFIG_PATH}/${cmd}" && 
+  grep -q 'tty' "${CONFIG_PATH}/cmds/${cmd}" && 
     _c="${_c} -t "
 
   for _config in "${_configs[@]}"
@@ -139,9 +173,8 @@ run_cmd() {
 }
 
 cmd_exists() {
-  local cmd="${1}"
-
-  [[ -s "${CONFIG_PATH}/${cmd}" ]]
+  local _cmd="${1}"
+  [[ -s "${CONFIG_PATH}/cmds/${_cmd}" ]]
 }
 
 env_setup() {
@@ -165,10 +198,13 @@ dispatch_cmd() {
   shift
 
   case "${cmd}" in 
+    (add) add_cmd "$@" ;;
+    (c3tk) usage ;;
     (configure) configure "${@}" ;;
     (fetch) fetch_add "${@}" ;;
-    (add) add_cmd "$@" ;;
     (install) install ;;
+    (list) installed_cmds ;;
+    (rm) rm_cmd "$@" ;;
     (shell) shell_for ${@} ;;
     (*)
       cmd_exists ${cmd} || unknown "${cmd}"
@@ -182,7 +218,7 @@ main() {
   env_setup
 
   # Allow this script to be symlinked as the actual command name :)
-  cmd="$1" ; [[ ${0//*\/} == "c3tk" ]]  && shift || cmd="${0//*\/}"
+  cmd="$1" ; [[ ${0//*\/} == "c3tk" ]] && shift || cmd="${0//*\/}"
 
   dispatch_cmd "${cmd}" $@
   
