@@ -97,7 +97,7 @@ add_cmd() {
     [[ -n "${_image}" ]] || fail "$(add_usage)"
   fi
   ln -fs ${INSTALL_PATH}/c3tk ${INSTALL_PATH}/${_cmd}
-  docker pull ${_image}:${_tag:-latest}
+  docker pull --platform="linux/amd64" ${_image}:${_tag:-latest}
 }
 
 rm_cmd() {
