@@ -46,7 +46,7 @@ Where cmd is either one of:
   list
   rm <name>
   shell <name>
-  X - where X is a cmd that was added via `add` or configured via .c3tk files
+  X - where X is a cmd that was added via \`add\` or configured via .c3tk files
 
 USAGE
 }
