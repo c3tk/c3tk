@@ -11,7 +11,7 @@ First install [Docker](https://www.docker.com/products/docker-desktop)
 ## Installation Via GitHub
 
 ```
-curl -sL https://raw.githubusercontent.com/starkandwayne/c3tk/main/bin/c3tk -o c3tk &&  
+curl -sL https://raw.githubusercontent.com/wayneeseguin/c3tk/main/bin/c3tk -o c3tk &&  
   chmod 0755 ./c3tk && sudo ./c3tk install
 ```
 then add the directory to your `PATH`:

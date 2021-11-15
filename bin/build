@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -v
 exec &> >(tee -a /root/build.log)
 
 installPath="/opt/bin"
@@ -20,6 +19,7 @@ install_cmd() {
   chmod_ln "${cmd}"
 }
 
+set -v
 cmd=jq ; echo "Installing \`${cmd}\`..."
 url="https://github.com/stedolan/jq/releases/latest/download/jq-linux64"
 curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
