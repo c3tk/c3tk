@@ -13,7 +13,7 @@ install() {
   mkdir -p "${INSTALL_PATH}" "${OPT_PATH}"/bin &&
   cp $0 "${INSTALL_PATH}/c3tk" &&
   echo "Installed \`${INSTALL_PATH}/c3tk\`" &&
-  echo -e "\nAdd $(paths) to your PATH:\n\n\texport PATH=\"\`c3tk paths\`:\$PATH\"\n" &&
+  echo -e "\nAdd $(paths) to your PATH:\n\n\texport PATH=\"\$(c3tk paths):\$PATH\"\n" &&
   exit 0
 }
 
@@ -22,7 +22,7 @@ paths() {
 }
 
 docker_run() {
-  exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w "${@}"
+  exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w $@
 }
 
 usage() {
@@ -164,7 +164,7 @@ shell_for() {
 
   [[ "" == "${cmd}" ]] || cmd_exists "${cmd}" || unknown "${cmd}"
   image=$(image_for "${cmd}")
-  docker_run -it -v $HOME/:/root "${image}" bash "${@}"
+  docker_run -it -v $HOME/:/root "${image}" bash $@
 }
 
 run_cmd() {
@@ -184,7 +184,7 @@ run_cmd() {
   do _c="${_c} -v $HOME/${_config}:/root/${_config}"
   done
 
-  docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" "${@}"
+  docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" $@
 }
 
 cmd_exists() {
