@@ -14,9 +14,10 @@ First install [Docker](https://www.docker.com/products/docker-desktop)
 curl -sL https://raw.githubusercontent.com/wayneeseguin/c3tk/main/bin/c3tk -o c3tk &&  
   chmod 0755 ./c3tk && sudo ./c3tk install
 ```
-then add the directory to your `PATH`:
+Follow the output of the instructions emitted from the install such as adding
+to your `PATH:
 ```
-echo -e '\nPATH="/usr/local/bin/c3tk/bin:$${PATH}"' >> ~/.profile
+grep -q c3tk ~/.profile || echo 'export PATH="$(c3tk paths):$PATH"' >> ~/.profile
 ```
 Then open a new shell and start adding the commands you are interested in.
 
