@@ -22,7 +22,7 @@ paths() {
 }
 
 docker_run() {
-  exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w $@
+  exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w "$@"
 }
 
 usage() {
@@ -164,7 +164,7 @@ shell_for() {
 
   [[ "" == "${cmd}" ]] || cmd_exists "${cmd}" || unknown "${cmd}"
   image=$(image_for "${cmd}")
-  docker_run -it -v $HOME/:/root "${image}" bash $@
+  docker_run -it -v $HOME/:/root "${image}" bash "$@"
 }
 
 run_cmd() {
@@ -180,11 +180,12 @@ run_cmd() {
   grep -q 'tty' "${CONFIG_PATH}/cmds/${cmd}" && 
     _c="${_c} -t "
 
+  _c="${_c} -v $HOME/.config:/root/.config" # Pass ~/.config by default
   for _config in "${_configs[@]}"
   do _c="${_c} -v $HOME/${_config}:/root/${_config}"
   done
 
-  docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" $@
+  docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" "$*"
 }
 
 cmd_exists() {
@@ -200,13 +201,12 @@ env_setup() {
     "${INSTALL_PREFIX:="/usr/local/bin"}" \
     "${INSTALL_PATH:="${INSTALL_PREFIX}"}" \
     "${IMAGE_TAG:="${TAG:-latest}"}"
-
-  [[ "" == "${DEBUG}" ]] || set -xv
 }
 
 gen_config() {
-  mkdir -p "${CONFIG_PATH}"/{bin,cmds,config}
+  mkdir -p "${CONFIG_PATH}"/{bin,cmds,config} ${HOME}/.config
 
+  # TODO: The below case needs to be handled
   touch ~/.saferc ~/.vaultrc ~/.flyrc
 }
 
@@ -222,7 +222,7 @@ dispatch_cmd() {
 
   case "${cmd}" in 
     (paths) paths ;;
-    (add) add_cmd "$@" ;;
+    (add) add_cmd $@ ;;
     (c3tk) usage ;;
     (configure) configure "${@}" ;;
     (fetch) fetch_add "${@}" ;;
@@ -238,6 +238,9 @@ dispatch_cmd() {
 }
 
 main() {
+
+  [[ -z "${DEBUG}" ]] || set -xv && export DEBUG
+
   env_setup
 
   # Allow this script to be symlinked as the actual command name :)
@@ -248,7 +251,7 @@ main() {
     # install is a special case, so we handle it explicitly.
     install
   else
-    dispatch_cmd "${cmd}" $@
+    dispatch_cmd "${cmd}" "$*"
   fi
   
   exit 0

@@ -8,7 +8,7 @@ build:
 install: configs c3tk 
 
 c3tk:
-	./bin/c3tk install
+	sudo ./bin/c3tk install
 
 uninstall:
 	./bin/uninstall
