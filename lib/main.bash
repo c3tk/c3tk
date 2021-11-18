@@ -15,6 +15,7 @@ Where cmd is either one of:
   shell <name>
   X - where X is a cmd that was added via \`add\` or configured via .c3tk files
   install
+  update
   uninstall
 
 USAGE
@@ -29,14 +30,17 @@ main() {
   # Allow this script to be symlinked as the actual command name :)
   cmd="$1" ; [[ ${0//*\/} == "c3tk" ]] && shift || cmd="${0//*\/}"
 
-  if [[ "install" == "${cmd}" ]]
-  then
-    # install is a special case, so we handle it explicitly.
-    install
-  else
-    dispatch_cmd "${cmd}" "$@"
-  fi
-  
+  case "${cmd}" in
+    # Install is a special case, so we handle it explicitly
+    (install) install ;;
+
+    # Ditto for update
+    (update) update ;;
+
+    # Pass everything else over to the distpacher
+    (*) dispatch_cmd "${cmd}" "$@" ;;
+  esac
+
   exit 0
 }
 
