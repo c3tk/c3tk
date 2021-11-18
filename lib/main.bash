@@ -2,17 +2,20 @@ require dispatch environment
 
 usage() {
   cat <<-USAGE
+
 c3tk <cmd> [OPTIONS|ARGS]
 
 Where cmd is either one of:
+
   add <name> <image>
-  configure
   fetch <url-to-.c3tk-file>
-  install
+  configure
   list
   rm <name>
   shell <name>
   X - where X is a cmd that was added via \`add\` or configured via .c3tk files
+  install
+  uninstall
 
 USAGE
 }

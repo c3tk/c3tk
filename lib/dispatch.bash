@@ -15,6 +15,7 @@ dispatch_cmd() {
     (list) installed_cmds ;;
     (rm) rm_cmd "$@" ;;
     (shell) shell_for ${@} ;;
+    (uninstall) uninstall ;;
     (*)
       cmd_exists ${cmd} || unknown "${cmd}"
 
