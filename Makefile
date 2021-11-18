@@ -14,7 +14,7 @@ install:
 	sudo cp bin/c3tk /usr/local/bin/
 
 uninstall:
-	sudo rm -rf /opt/c3tk
+	sudo rm -rf /opt/c3tk /usr/local/bin/c3tk
 	rm -rf ~/.config/c3tk
 	./bin/uninstall
 

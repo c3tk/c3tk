@@ -10,9 +10,10 @@ First install [Docker](https://www.docker.com/products/docker-desktop)
 
 ## Installation Via GitHub
 
+Security Note: Please inspect the script before you run it so you understand 
+what is happening! Also feel free to download and install as separate steps. :)
 ```
-curl -sL https://raw.githubusercontent.com/wayneeseguin/c3tk/main/bin/c3tk -o c3tk &&  
-  chmod 0755 ./c3tk && sudo ./c3tk install
+curl -o - https://raw.githubusercontent.com/c3tk/c3tk/main/bin/c3tk | sudo bash
 ```
 Follow the output of the instructions emitted from the install such as adding
 to your `PATH:
