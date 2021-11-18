@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-OPT_PATH="/opt/c3tk"
+OPT_PATH="${OPT_PATH:-"/opt/c3tk"}"
 INSTALL_PATH="${OPT_PATH}/bin"
 LIB_PATH="${OPT_PATH}/lib"
 UPSTREAM="https://raw.githubusercontent.com/c3tk/c3tk/main/"
@@ -21,7 +21,7 @@ grab() {
 }
 
 grab_libs() {
-  source "${LIB_PATH}"/lib/libs.bash || raise "Could not load libs!"
+  source "${LIB_PATH}"/libs.bash || raise "Could not load libs!"
 
   grab lib/c3tk.bash
 
