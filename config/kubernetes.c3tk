@@ -1,2 +1,2 @@
-add k9s image=derailed/k9s config=.kube,.config tty stream
+add k9s image=derailed/k9s tty stream
 add kubectl image=wayneeseguin/c3tk tty stream

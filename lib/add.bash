@@ -1,12 +1,11 @@
 add_usage() {
   cat <<-USAGE
-c3tk add <name> image=<img> [tag=<tag>] [configs=.<a>,.<b>,...] [tty] [stream]
+c3tk add <name> image=<img> [tag=<tag>] [tty] [stream]
 
 Where:
    name    - command name to expose to the host system
    tag     - image tag to use, defaults to :latest
    image   - docker compatible registry url
-   configs - comma separated list of config files to map via -v
    tty     - if present will add '-t' 
    stream  - if present will add '--log-driver=none -a stdin -a stdout -a stderr'
 

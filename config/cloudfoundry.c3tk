@@ -1,10 +1,10 @@
-add bosh image=starkandwayne/c3tk tty stream configs=.bosh
-add boss image=starkandwayne/c3tk tty stream configs=.bosh
+add bosh image=starkandwayne/c3tk tty stream
+add boss image=starkandwayne/c3tk tty stream
 add cc-me image=starkandwayne/c3tk tty stream
-add cf image=starkandwayne/c3tk tty stream configs=.cf tty stream
-add credhub image=starkandwayne/c3tk tty stream configs=.credhub tty stream
+add cf image=starkandwayne/c3tk tty stream tty stream
+add credhub image=starkandwayne/c3tk tty stream tty stream
 add fly image=starkandwayne/c3tk config=.flyrc tty stream
-add genesis image=starkandwayne/c3tk configs=.ssh,.saferc,.vaultrc,.credhub,.bosh,.cf tty stream
-add safe image=starkandwayne/c3tk configs=.saferc,.vaultrc tty stream
+add genesis image=starkandwayne/c3tk tty stream
+add safe image=starkandwayne/c3tk tty stream
 add spruce image=starkandwayne/c3tk tty stream
 add yamler image=starkandwayne/c3tk tty stream

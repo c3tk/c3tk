@@ -32,7 +32,7 @@ Run `c3tk add` to see a full description of the help output.
 
 So for example to add the aws cli we run:
 ```
-c3tk add aws image=amazon/aws-cli configs=.aws
+c3tk add aws image=amazon/aws-cli
 ```
 
 Alternatively we can install sets of commands via `.c3tk` files. First place the
