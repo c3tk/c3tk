@@ -223,7 +223,7 @@ dispatch_cmd() {
   case "${cmd}" in 
     (paths) paths ;;
     (add) add_cmd "$@" ;;
-    (c3tk|help) usage ;;
+    (c3tk|help|--help|-h) usage ;;
     (configure) configure "${@}" ;;
     (fetch) fetch_add "${@}" ;;
     (list) installed_cmds ;;
