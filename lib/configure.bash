@@ -25,9 +25,10 @@ configure() {
   for _config in $(find ~/.config/c3tk/config  -iname '*.c3tk')
   do
     _group=$(basename ${_config} '.c3tk')
+    echo -e "\n${_group}:\n$(printf '=%.0s' {1..80})"
     while read _line 
     do 
-      echo " ${_group} => ${_line}"
+      echo " => ${_line}"
       $0 $_line
     done < <(cat ${_config} | sed -e '/^[[:blank:]]*#/d;s/#.*//')
   done
