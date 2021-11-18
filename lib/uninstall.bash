@@ -1,3 +1,18 @@
+uninstall_usage() {
+  cat <<-USAGE
+
+Usage:
+
+    c3tk uninstall
+
+Description:
+
+    Uninstalls c3tk, removing /opt/c3tk, /usr/local/bin/c3tk, and ~/.config/c3tk
+
+USAGE
+exit 0
+}
+
 uninstall() {
   if [[ -d "${OPT_PATH:="/opt/c3tk"}" ]]
   then 

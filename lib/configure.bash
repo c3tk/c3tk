@@ -1,3 +1,18 @@
+configure_usage() {
+  cat <<-USAGE
+
+Usage:
+
+    c3tk configure
+
+Description:
+
+    Configure loads all ~/.config/c3tk/config/*.c3tk files
+
+USAGE
+exit 0
+}
+
 gen_config() {
   mkdir -p "${CONFIG_PATH}"/{bin,cmds,config} ${HOME}/.config
 

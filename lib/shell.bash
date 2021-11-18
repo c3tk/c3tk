@@ -1,3 +1,18 @@
+shell_usage() {
+  cat <<-USAGE
+
+Usage:
+
+    c3tk shell <cmd>
+
+Description:
+
+    Launches an interaticve shell (bash) session using the <cmd>'s container image.
+
+USAGE
+exit 0
+}
+
 require cmd docker
 
 shell_for() {

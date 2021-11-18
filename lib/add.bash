@@ -1,5 +1,5 @@
 add_usage() {
-  cat <<-HELP
+  cat <<-USAGE
 c3tk add <name> image=<img> [tag=<tag>] [configs=.<a>,.<b>,...] [tty] [stream]
 
 Where:
@@ -10,7 +10,8 @@ Where:
    tty     - if present will add '-t' 
    stream  - if present will add '--log-driver=none -a stdin -a stdout -a stderr'
 
-HELP
+USAGE
+exit 0
 }
 
 add_cmd() {
