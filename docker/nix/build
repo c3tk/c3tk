@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+exec &> >(tee -a /root/build.log)
+
+installPath="/opt/bin"
+
+mkdir -p "${installPath}"
+
+chmod_ln() { 
+  chmod 0766 "${installPath}/${cmd}"
+  ln -s "${installPath}/${1}" "/usr/local/bin/${1}"
+}
+
+install_cmd() {
+  cmd="$1" ; shift
+  url="$2" ; shift
+  echo "Installing \`${cmd}\`..."
+  eval "$@"
+  chmod_ln "${cmd}"
+}
+
+set -v
+cmd=jq ; echo "Installing \`${cmd}\`..."
+url="https://github.com/stedolan/jq/releases/latest/download/jq-linux64"
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+cmd=yq ; echo "Installing \`${cmd}\`..."
+url="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+cmd=xq ; echo "Installing \`${cmd}\`..."
+pip3 install ${cmd} && mv /usr/local/bin/${cmd} "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+cmd=safe ; echo "Installing \`${cmd}\`..."
+url="https://github.com/starkandwayne/safe/releases/latest/download/safe-linux-amd64"
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+cmd=spruce ; echo "Installing \`${cmd}\`..."
+url="https://github.com/geofffranks/spruce/releases/latest/download/spruce-linux-amd64"
+curl -sL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+cmd=kubectl ; echo "Installing \`${cmd}\`..."
+v=$(curl -s https://github.com/kubernetes/kubernetes/releases/latest | awk -F\" '{print $2}' | awk -F/ '{print $NF}')
+url="https://storage.googleapis.com/kubernetes-release/release/${v}/bin/linux/amd64/kubectl"
+curl -fsSL "${url}" -o "${installPath}/${cmd}" && chmod_ln "${cmd}"
+
+exit 0

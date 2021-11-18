@@ -15,7 +15,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tshark
 
 WORKDIR /root
 
-ADD ./bin/build /root/build
+ADD ./docker/c3tk/build /root/build
 RUN /root/build
 
 CMD /bin/bash

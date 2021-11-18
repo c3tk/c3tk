@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-cp ./bin/c3tk /usr/local/bin/c3tk
-
-/usr/local/bin/c3tk install
-
-exit 0

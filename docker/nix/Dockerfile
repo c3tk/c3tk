@@ -14,7 +14,9 @@ RUN apt-get update \
 
 WORKDIR /root
 
-ADD ./bin/build /root/build
+ADD ./docker/nix/build /root/build
+ADD ./docker/nix/install /root/nix-install
+RUN /root/nix-install
 RUN /root/build
 
 ARG NIX_VERSION=2.3.15
