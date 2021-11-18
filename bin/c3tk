@@ -25,7 +25,7 @@ grab_libs() {
 
   grab lib/c3tk.bash
 
-  for lib in ${C3TK_LIBS}
+  for lib in ${C3TK_LIBS[@]}
   do
     grab lib/${lib}.bash
   done

@@ -8,7 +8,7 @@ normalize_url() {
   then
     echo "${raw}"
   else
-    echo "https://raw.githubusercontent.com/wayneeseguin/c3tk/main/config/${raw}.c3tk"
+    echo "${UPSTREAM}/config/${raw}.c3tk"
   fi
 }
 
