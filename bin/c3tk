@@ -1,260 +1,60 @@
 #!/usr/bin/env bash
 
-fail() {
-  echo "FAIL: $*" >&2
-  exit 1
+OPT_PATH="/opt/c3tk"
+INSTALL_PATH="${OPT_PATH}/bin"
+LIB_PATH="${OPT_PATH}/lib"
+UPSTREAM="https://raw.githubusercontent.com/c3tk/c3tk/main/"
+
+raise() {
+  echo "${1}" >&2
+  exit 255
 }
 
-installed_cmds() {
-  find "${CONFIG_PATH}/cmds" -mindepth 1 -maxdepth 1 -type f | sed -e "s#${CONFIG_PATH}/cmds/##" | sort
+grab() {
+  local origin=$1
+  local target="${OPT_PATH}"/${origin}
+
+  mkdir -p "$(dirname ${target})"
+
+  curl -f -s -o "${target}" "${UPSTREAM}"/${origin} 2>/dev/null ||
+    raise "Could not download ${origin}"
+}
+
+grab_libs() {
+  source "${LIB_PATH}"/lib/libs.bash || raise "Could not load libs!"
+
+  grab lib/c3tk.bash
+
+  for lib in ${C3TK_LIBS}
+  do
+    grab lib/${lib}.bash
+  done
+}
+
+grab_files() {
+  local target=${1}
+
+  grab bin/c3tk &&
+    grab lib/libs.bash &&
+    grab_libs
 }
 
 install() {
-  mkdir -p "${INSTALL_PATH}" "${OPT_PATH}"/bin &&
-  cp $0 "${INSTALL_PATH}/c3tk" &&
-  echo "Installed \`${INSTALL_PATH}/c3tk\`" &&
-  echo -e "\nAdd $(paths) to your PATH:\n\n\texport PATH=\"\$(c3tk paths):\$PATH\"\n" &&
-  exit 0
+  mkdir -p "${OPT_PATH}"/{bin,cmds,config,lib} &&
+    grab_files &&
+    chmod +x ${INSTALL_PATH}/c3tk &&
+    echo "Installed \`${INSTALL_PATH}/c3tk\`" &&
+    echo -e "\nAdd $(paths) to your PATH:\n\n\texport PATH=\"\$(/opt/c3tk/bin/c3tk paths):\$PATH\"\n" &&
+    exit 0
 }
 
 paths() {
-  echo "${HOME}/.config/c3tk/bin:/opt/c3tk/bin:${INSTALL_PATH}"
+  echo "${HOME}/.config/c3tk/bin:${INSTALL_PATH}"
 }
 
-docker_run() {
-  exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w "$@"
-}
-
-usage() {
-  cat <<-USAGE
-c3tk <cmd> [OPTIONS|ARGS]
-
-Where cmd is either one of:
-  add <name> <image>
-  configure
-  fetch <url-to-.c3tk-file>
+if source "${LIB_PATH}"/c3tk.bash 2>/dev/null
+then
+  _c3tk_bootstrap && main $@
+else
   install
-  list
-  rm <name>
-  shell <name>
-  X - where X is a cmd that was added via \`add\` or configured via .c3tk files
-
-USAGE
-}
-
-add_usage() {
-  cat <<-HELP
-c3tk add <name> image=<img> [tag=<tag>] [configs=.<a>,.<b>,...] [tty] [stream]
-
-Where:
-   name    - command name to expose to the host system
-   tag     - image tag to use, defaults to :latest
-   image   - docker compatible registry url
-   configs - comma separated list of config files to map via -v
-   tty     - if present will add '-t' 
-   stream  - if present will add '--log-driver=none -a stdin -a stdout -a stderr'
-
-HELP
-}
-
-add_cmd() {
-  (( $# > 1 )) || fail "$(add_usage)"
-
-  local _cmd _image _tag target_path
-  _cmd="$1" && shift || fail "$(add_usage)"
-  # TODO: If empty check if definition file already exists, if so symlink.
-  if (( $# > 0 ))
-  then
-    for arg in "${@}" 
-    do 
-      case "${arg}" in
-        (image=*)
-          _image=$(echo ${arg} | awk -F= '{print $2}')
-          ;;
-        (tag=*)
-          _tag=$(echo ${arg} | awk -F= '{print $2}')
-          [[ -n "${_tag}" ]] || _tag="latest"
-          ;;
-      esac
-      if ! grep -sqwF "${arg}" "${CONFIG_PATH}/cmds/${_cmd}"; then
-        echo "${arg}" >> ${CONFIG_PATH}/cmds/${_cmd}
-      fi
-    done
-    [[ -n "${_image}" ]] || fail "Image Required"
-  else
-    if [[ -s ${CONFIG_PATH}/cmds/${_cmd} ]]
-    then
-      _image=$(awk -F= '/image=/{print $2}' ${CONFIG_PATH}/cmds/${cmd})
-      _tag=$(awk -F= '/tag=/{print $2}' ${CONFIG_PATH}/cmds/${cmd})
-    fi
-    [[ -n "${_image}" ]] || fail "$(add_usage)"
-  fi
-  target_path="${BIN_PATH}"
-
-  ln -fs ${INSTALL_PATH}/c3tk ${target_path}/${_cmd}
-  docker pull --platform="linux/amd64" ${_image}:${_tag:-latest}
-}
-
-rm_cmd() {
-  for _cmd in "${@}"
-  do
-    if [[ -s ${CONFIG_PATH}/cmds/${_cmd} ]] 
-    then rm ${CONFIG_PATH}/cmds/${_cmd} 
-    fi
-
-    if [[ -L ${BIN_PATH}/${_cmd} ]] 
-    then  rm ${BIN_PATH}/${_cmd}
-    fi
-  done
-}
-
-configure() {
-  local _config _group
-  for _config in $(find ~/.config/c3tk/config  -iname '*.c3tk')
-  do
-    _group=$(basename ${_config} '.c3tk')
-    while read _line 
-    do 
-      echo " ${_group} => ${_line}"
-      $0 $_line
-    done < <(cat ${_config} | sed -e '/^[[:blank:]]*#/d;s/#.*//')
-  done
-}
-
-normalize_url() {
-  local raw="${1}"
-  shift
-
-  if [[ "${raw}" =~ https?://.*\.c3tk ]]
-  then
-    echo "${raw}"
-  else
-    echo "https://raw.githubusercontent.com/wayneeseguin/c3tk/main/config/${raw}.c3tk"
-  fi
-}
-
-fetch_add() {
-  local url="${1}"
-  shift
-
-  url=$(normalize_url $url)
-  group=$(basename $url .c3tk)
-
-  echo -n "Fetching ${url} ... "
-  curl -f -s -o ${CONFIG_PATH}/config/${group}.c3tk $url 2>/dev/null || fail "transport error"
-  echo "done"
-
-  configure
-}
-
-image_for() {
-  local cmd="${1}"
-
-  if [[ -z "${cmd}" ]]
-    then
-      echo "wayneeseguin/c3tk"
-    else
-      awk -F= '/image=/{print $2}' ${CONFIG_PATH}/cmds/${cmd}
-  fi
-}
-
-shell_for() {
-  local cmd="${1}"
-  shift
-
-  [[ "" == "${cmd}" ]] || cmd_exists "${cmd}" || unknown "${cmd}"
-  image=$(image_for "${cmd}")
-  docker_run -it -v $HOME/:/root "${image}" bash "$@"
-}
-
-run_cmd() {
-  local cmd="${1}"
-  shift
-
-  _image=$(awk -F= '/image/{print $2}' "${CONFIG_PATH}/cmds/${cmd}")
-  _tag=${TAG:-$(awk -F= '/tag/{print $2}' "${CONFIG_PATH}/cmds/${cmd}")}
-  _configs=($(awk -F= '/configs/{print $2}' "${CONFIG_PATH}/cmds/${cmd}" | tr ',' ' '))
-  _cmd=($(awk -F= '/cmd/{print $2}' "${CONFIG_PATH}/cmds/${cmd}" ))
-  grep -q 'stream' "${CONFIG_PATH}/cmds/${cmd}" &&
-    _c="${_c} --log-driver=none -a stdin -a stdout -a stderr "
-  grep -q 'tty' "${CONFIG_PATH}/cmds/${cmd}" && 
-    _c="${_c} -t "
-
-  _c="${_c} -v $HOME/.config:/root/.config" # Pass ~/.config by default
-  for _config in "${_configs[@]}"
-  do _c="${_c} -v $HOME/${_config}:/root/${_config}"
-  done
-
-  docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" "$@"
-}
-
-cmd_exists() {
-  local _cmd="${1}"
-  [[ -s "${CONFIG_PATH}/cmds/${_cmd}" ]]
-}
-
-env_setup() {
-  true \
-    "${CONFIG_PATH:="$HOME/.config/c3tk"}" \
-    "${BIN_PATH:="${CONFIG_PATH}/bin"}" \
-    "${OPT_PATH:="/opt/c3tk"}" \
-    "${INSTALL_PREFIX:="/usr/local/bin"}" \
-    "${INSTALL_PATH:="${INSTALL_PREFIX}"}" \
-    "${IMAGE_TAG:="${TAG:-latest}"}"
-}
-
-gen_config() {
-  mkdir -p "${CONFIG_PATH}"/{bin,cmds,config} ${HOME}/.config
-
-  # TODO: The below case needs to be handled
-  touch ~/.saferc ~/.vaultrc ~/.flyrc
-}
-
-unknown() {
-  fail "${1} not found, do you need to \`add\` it?"
-}
-
-dispatch_cmd() {
-  local cmd="${1}"
-  shift
-
-  gen_config
-
-  case "${cmd}" in 
-    (paths) paths ;;
-    (add) add_cmd "$@" ;;
-    (c3tk|help|--help|-h) usage ;;
-    (configure) configure "${@}" ;;
-    (fetch) fetch_add "${@}" ;;
-    (list) installed_cmds ;;
-    (rm) rm_cmd "$@" ;;
-    (shell) shell_for ${@} ;;
-    (*)
-      cmd_exists ${cmd} || unknown "${cmd}"
-
-      run_cmd ${cmd} ${@}
-      ;;
-  esac
-}
-
-main() {
-
-  [[ -z "${DEBUG}" ]] || set -xv && export DEBUG
-
-  env_setup
-
-  # Allow this script to be symlinked as the actual command name :)
-  cmd="$1" ; [[ ${0//*\/} == "c3tk" ]] && shift || cmd="${0//*\/}"
-
-  if [[ "install" == "${cmd}" ]]
-  then
-    # install is a special case, so we handle it explicitly.
-    install
-  else
-    dispatch_cmd "${cmd}" "$@"
-  fi
-  
-  exit 0
-}
-
-main "$@"
+fi
