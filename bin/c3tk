@@ -185,7 +185,7 @@ run_cmd() {
   do _c="${_c} -v $HOME/${_config}:/root/${_config}"
   done
 
-  docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" "$*"
+  docker_run -i ${_c} "${_image}:${_tag:-latest}" "${_cmd:-"${cmd}"}" "$@"
 }
 
 cmd_exists() {
@@ -222,8 +222,8 @@ dispatch_cmd() {
 
   case "${cmd}" in 
     (paths) paths ;;
-    (add) add_cmd $@ ;;
-    (c3tk) usage ;;
+    (add) add_cmd "$@" ;;
+    (c3tk|help) usage ;;
     (configure) configure "${@}" ;;
     (fetch) fetch_add "${@}" ;;
     (list) installed_cmds ;;
@@ -251,10 +251,10 @@ main() {
     # install is a special case, so we handle it explicitly.
     install
   else
-    dispatch_cmd "${cmd}" "$*"
+    dispatch_cmd "${cmd}" "$@"
   fi
   
   exit 0
 }
 
-main $@
+main "$@"
