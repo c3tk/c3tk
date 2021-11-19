@@ -23,6 +23,6 @@ fetch_add() {
   curl -f -s -o ${CONFIG_PATH}/config/${group}.c3tk $url 2>/dev/null || fail "transport error"
   echo "done"
 
-  configure
+  configure_group ${CONFIG_PATH}/config/${group}.c3tk
 }
 
