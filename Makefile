@@ -16,8 +16,7 @@ install:
 uninstall:
 	sudo rm -rf /opt/c3tk /usr/local/bin/c3tk
 	rm -rf ~/.c3tk
-	./bin/uninstall
-
+	echo "Don't forget to remove the PATH entry in your profiles."
 
 push:
 	docker push wayneeseguin/c3tk:latest
