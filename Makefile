@@ -6,8 +6,8 @@ build:
 	docker build . --platform linux/amd64 -f ./docker/c3tk/Dockerfile -t wayneeseguin/c3tk:latest
 
 install: 
-	mkdir -p ~/.config/c3tk/{config,bin,lib}
-	cp config/*.c3tk ~/.config/c3tk/config/
+	mkdir -p ~/.c3tk/{config,bin,lib}
+	cp config/*.c3tk ~/.c3tk/config/
 	sudo mkdir -p /opt/c3tk/{config,bin,lib}
 	sudo cp lib/*.bash /opt/c3tk/lib/
 	sudo cp bin/c3tk /opt/c3tk/bin/
@@ -15,7 +15,7 @@ install:
 
 uninstall:
 	sudo rm -rf /opt/c3tk /usr/local/bin/c3tk
-	rm -rf ~/.config/c3tk
+	rm -rf ~/.c3tk
 	./bin/uninstall
 
 

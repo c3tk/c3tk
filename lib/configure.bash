@@ -7,14 +7,14 @@ Usage:
 
 Description:
 
-    Configure loads all ~/.config/c3tk/config/*.c3tk files
+    Configure loads all ~/.c3tk/config/*.c3tk files
 
 USAGE
 exit 0
 }
 
 gen_config() {
-  mkdir -p "${CONFIG_PATH}"/{bin,cmds,config} ${HOME}/.config
+  mkdir -p "${CONFIG_PATH}"/{bin,cmds,config}
 
   # TODO: The below case needs to be handled
   touch ~/.saferc ~/.vaultrc ~/.flyrc
@@ -22,7 +22,7 @@ gen_config() {
 
 configure() {
   local _config _group
-  for _config in $(find ~/.config/c3tk/config  -iname '*.c3tk')
+  for _config in $(find ~/.c3tk/config  -iname '*.c3tk')
   do
     _group=$(basename ${_config} '.c3tk')
     echo -e "\n${_group}:\n$(printf '=%.0s' {1..80})"

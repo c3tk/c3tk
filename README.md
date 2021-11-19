@@ -36,9 +36,9 @@ c3tk add aws image=amazon/aws-cli
 ```
 
 Alternatively we can install sets of commands via `.c3tk` files. First place the
-files into your `~/.config/c3tk/config` directory such as
+files into your `~/.c3tk/config` directory such as
 ```
-ls ~/.config/c3tk/config
+ls ~/.c3tk/config
 clouds.c3tk
 hashicorp.c3tk
 k8s.c3tk

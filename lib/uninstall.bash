@@ -7,7 +7,7 @@ Usage:
 
 Description:
 
-    Uninstalls c3tk, removing /opt/c3tk, /usr/local/bin/c3tk, and ~/.config/c3tk
+    Uninstalls c3tk, removing /opt/c3tk, /usr/local/bin/c3tk, and ~/.c3tk
 
 USAGE
 exit 0
@@ -20,7 +20,7 @@ uninstall() {
     rm -rf "${OPT_PATH}" /usr/local/bin/c3tk
   fi
   
-  echo "Removing ~/.config/c3tk..."
-  rm -rf ~/.config/c3tk
+  echo "Removing ~/.c3tk..."
+  rm -rf ~/.c3tk
   echo "c3tk uninstalled."
 }

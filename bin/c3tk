@@ -49,7 +49,7 @@ install() {
 }
 
 paths() {
-  echo "${HOME}/.config/c3tk/bin:${INSTALL_PATH}"
+  echo "${HOME}/.c3tk/bin:${INSTALL_PATH}"
 }
 
 if source "${LIB_PATH}"/c3tk.bash 2>/dev/null
