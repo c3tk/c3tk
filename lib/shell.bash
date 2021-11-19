@@ -7,7 +7,7 @@ Usage:
 
 Description:
 
-    Launches an interaticve shell (bash) session using the <cmd>'s container image.
+    Launches an interactive shell (bash) session using the <cmd>'s container image.
 
 USAGE
 exit 0
@@ -21,6 +21,6 @@ shell_for() {
 
   [[ "" == "${cmd}" ]] || cmd_exists "${cmd}" || unknown "${cmd}"
   image=$(image_for "${cmd}")
-  docker_run -it -v $HOME/:/root "${image}" bash "$@"
+  docker_run -it "${image}" bash "$@"
 }
 
