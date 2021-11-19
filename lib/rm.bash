@@ -1,4 +1,4 @@
-list_usage() {
+rm_usage() {
   cat <<-USAGE
 
 Usage:

@@ -21,7 +21,7 @@ add_cmd() {
   # TODO: If empty check if definition file already exists, if so symlink.
   if (( $# > 0 ))
   then
-    echo "" > ${CONFIG_PATH}/cmds/${_cmd}
+    : > ${CONFIG_PATH}/cmds/${_cmd} # Truncate
     for arg in "${@}" 
     do 
       case "${arg}" in

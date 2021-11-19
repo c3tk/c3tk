@@ -13,6 +13,7 @@ dispatch_cmd() {
     (configure) configure "${@}" ;;
     (fetch) fetch_add "${@}" ;;
     (list) installed_cmds ;;
+    (info) info_cmds "$@";;
     (rm) rm_cmd "$@" ;;
     (shell) shell_for ${@} ;;
     (uninstall) uninstall ;;
