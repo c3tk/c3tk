@@ -10,5 +10,5 @@ image_for() {
 }
 
 docker_run() {
-  exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w "$@"
+  exec docker run --rm --platform="linux/amd64" -w '/w' -v ${PWD}:/w -v ${HOME}:/root "$@"
 }
