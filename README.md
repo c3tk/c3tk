@@ -18,7 +18,7 @@ curl -o - https://raw.githubusercontent.com/c3tk/c3tk/main/bin/c3tk | sudo bash
 Follow the output of the instructions emitted from the install such as adding
 to your `PATH:
 ```
-grep -q c3tk ~/.profile || echo 'export PATH="$(c3tk paths):$PATH"' >> ~/.profile
+grep -q c3tk ~/.profile || echo '[[ -x /opt/c3tk/bin/c3tk ]] && export PATH="$(/opt/c3tk/bin/c3tk paths):$PATH"' >> ~/.profile
 ```
 Then open a new shell and start adding the commands you are interested in.
 
