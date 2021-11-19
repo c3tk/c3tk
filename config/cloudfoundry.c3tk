@@ -3,7 +3,7 @@ add boss image=starkandwayne/c3tk tty stream
 add cc-me image=starkandwayne/c3tk tty stream
 add cf image=starkandwayne/c3tk tty stream tty stream
 add credhub image=starkandwayne/c3tk tty stream tty stream
-add fly image=starkandwayne/c3tk config=.flyrc tty stream
+add fly image=starkandwayne/c3tk tty stream
 add genesis image=starkandwayne/c3tk tty stream
 add safe image=starkandwayne/c3tk tty stream
 add spruce image=starkandwayne/c3tk tty stream

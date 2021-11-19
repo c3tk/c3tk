@@ -16,12 +16,12 @@ exit 0
 rm_cmd() {
   for _cmd in "${@}"
   do
-    if [[ -s ${CONFIG_PATH}/cmds/${_cmd} ]] 
-    then rm ${CONFIG_PATH}/cmds/${_cmd} 
+    if [[ -s "${CONFIG_PATH}/cmds/${_cmd}" ]] 
+    then rm "${CONFIG_PATH}/cmds/${_cmd}" 
     fi
 
-    if [[ -L ${BIN_PATH}/${_cmd} ]] 
-    then  rm ${BIN_PATH}/${_cmd}
+    if [[ -L "${BIN_PATH}/${_cmd}" ]] 
+    then  rm "${BIN_PATH}/${_cmd}"
     fi
   done
 }

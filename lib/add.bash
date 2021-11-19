@@ -5,7 +5,7 @@ c3tk add <name> image=<img> [tag=<tag>] [tty] [stream]
 Where:
    name    - command name to expose to the host system
    tag     - image tag to use, defaults to :latest
-   image   - docker compatible registry url
+   image   - container registry compatible registry url
    tty     - if present will add '-t' 
    stream  - if present will add '--log-driver=none -a stdin -a stdout -a stderr'
 
@@ -49,6 +49,7 @@ add_cmd() {
   target_path="${BIN_PATH}"
 
   ln -fs ${INSTALL_PATH}/c3tk ${target_path}/${_cmd}
-  docker pull --platform="linux/amd64" ${_image}:${_tag:-latest}
+
+  ${RUNTIME} pull --platform="linux/amd64" ${_image}:${_tag:-latest}
 }
 

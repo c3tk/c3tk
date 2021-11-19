@@ -6,7 +6,9 @@ and consistently.
 
 ## Prerequsites 
 
-First install [Docker](https://www.docker.com/products/docker-desktop)
+First install a container runtime:
+* [Docker](https://www.docker.com/products/docker-desktop)
+* (TODO) [Podman](https://podman.io/getting-started/)
 
 ## Installation Via GitHub
 

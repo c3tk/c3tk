@@ -5,10 +5,8 @@ normalize_url() {
   shift
 
   if [[ "${raw}" =~ https?://.*\.c3tk ]]
-  then
-    echo "${raw}"
-  else
-    echo "${UPSTREAM}/config/${raw}.c3tk"
+  then echo "${raw}"
+  else echo "${UPSTREAM}/config/${raw}.c3tk"
   fi
 }
 

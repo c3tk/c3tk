@@ -15,9 +15,11 @@ exit 0
 
 gen_config() {
   mkdir -p "${CONFIG_PATH}"/{bin,cmds,config}
+}
 
-  # TODO: The below case needs to be handled
-  touch ~/.saferc ~/.vaultrc ~/.flyrc
+config_read() {
+  local _cmd="$1" _key="$2" _cmd_file="${CONFIG_PATH}/cmds/${_cmd}"
+  awk -F= "/${_key}/{print \$2}" "${cmd_file}"
 }
 
 configure() {
@@ -32,5 +34,9 @@ configure() {
       $0 $_line
     done < <(cat ${_config} | sed -e '/^[[:blank:]]*#/d;s/#.*//')
   done
+}
+
+platform() {
+  echo "${DIST:-$(config_read "${cmd}" "dist")}/${ARCH:-$(config_read "${cmd}" "arch")}"
 }
 

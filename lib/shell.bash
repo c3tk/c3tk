@@ -13,14 +13,13 @@ USAGE
 exit 0
 }
 
-require cmd docker
+require cmd container
 
 shell_for() {
-  local cmd="${1}"
+  local cmd="$1"
   shift
-
   [[ "" == "${cmd}" ]] || cmd_exists "${cmd}" || unknown "${cmd}"
-  image=$(image_for "${cmd}")
-  docker_run -it "${image}" bash "$@"
+  image=$(config_read "${cmd}" image)
+  run_container -it "${image}" bash "$@"
 }
 

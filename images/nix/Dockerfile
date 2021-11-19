@@ -14,8 +14,8 @@ RUN apt-get update \
 
 WORKDIR /root
 
-ADD ./docker/nix/build /root/build
-ADD ./docker/nix/install /root/nix-install
+ADD ./images/nix/build /root/build
+ADD ./images/nix/install /root/nix-install
 RUN /root/nix-install
 RUN /root/build
 
