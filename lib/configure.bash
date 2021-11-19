@@ -18,8 +18,9 @@ gen_config() {
 }
 
 config_read() {
-  local _cmd="$1" _key="$2" _cmd_file="${CONFIG_PATH}/cmds/${_cmd}"
-  awk -F= "/${_key}/{print \$2}" "${cmd_file}"
+  local _cmd="$1" _key="$2"
+  local _cmd_file="${CONFIG_PATH}/cmds/${_cmd}"
+  awk -F= "/${_key}/{print \$2}" "${_cmd_file}"
 }
 
 configure() {
