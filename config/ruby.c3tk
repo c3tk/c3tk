@@ -1,3 +1,3 @@
-add ruby image=ruby tty stream
-add gem image=ruby tty stream
-add irb image=ruby tty stream
+add ruby image=docker.io/ruby gstream
+add gem image=docker.io/ruby gstream
+add irb image=docker.io/ruby gstream

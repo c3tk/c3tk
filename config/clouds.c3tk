@@ -1,5 +1,5 @@
-add aws image=amazon/aws-cli tty stream
-add az image=mcr.microsoft.com/azure-cli tty stream
-add govc image=vmware/govc tty stream
-add gcloud image=gcr.io/google.com/cloudsdktool/cloud-sdk tty stream
-add gsutil image=gcr.io/google.com/cloudsdktool/cloud-sdk tty stream
+add aws image=docker.io/amazon/aws-cli gstream
+add az image=mcr.microsoft.com/azure-cli gstream
+add govc image=vmware/govc gstream
+add gcloud image=gcr.io/google.com/cloudsdktool/cloud-sdk gstream
+add gsutil image=gcr.io/google.com/cloudsdktool/cloud-sdk gstream

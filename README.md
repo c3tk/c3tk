@@ -58,7 +58,6 @@ NOTE: You can override the installation directory by exporting the environment
 variable `INSTALL_PATH` like so:
 ```
 export INSTALL_PATH="/usr/local/bin" ./
-
 ```
 
 ## Development Installation Via Repository

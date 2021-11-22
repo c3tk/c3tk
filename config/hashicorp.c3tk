@@ -1,4 +1,4 @@
-add terraform image=hashicorp/terraform tty stream
-add terragrunt image=alpine/terragrunt tty stream
-add vault image=hashicorp/vault tty stream
-add safe image=starkandwayne/c3tk tty stream
+add terraform image=docker.io/hashicorp/terraform gstream
+add terragrunt image=docker.io/alpine/terragrunt gstream
+add vault image=docker.io/hashicorp/vault gstream
+add safe image=docker.io/starkandwayne/c3tk gstream

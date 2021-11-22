@@ -15,7 +15,7 @@ env_setup() {
     "${IMAGE_TAG:="${TAG:-latest}"}" \
     "${DIST:="linux"}" \
     "${ARCH:="amd64"}" \
-    "${RUNTIME:="${RUNTIME:-"$(find_runtime)"}"}"
+    ${RUNTIME:=${RUNTIME:-$(find_runtime)}}
 
   command -v ${RUNTIME} &>/dev/null || 
     raise "No runtime found in path, install docker or podman"
