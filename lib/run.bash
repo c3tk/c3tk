@@ -11,9 +11,6 @@ run_cmd() {
   grep -q 'stream' "${CONFIG_PATH}/cmds/${cmd}" &&
     _c="${_c} --log-driver=none -a stdin -a stdout -a stderr "
 
-  grep -q 'tty' "${CONFIG_PATH}/cmds/${cmd}" && 
-    _c="${_c} -t "
-
   run_container --platform="$(platform)" ${_c} "${_image}:${_tag:-"latest"}" \
     "${_cmd:-"${cmd}"}" "$@"
 }
