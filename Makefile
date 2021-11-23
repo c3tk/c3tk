@@ -3,7 +3,7 @@
 all: build install
 
 build:
-	docker build . --platform linux/amd64 -f ./docker/c3tk/Dockerfile -t wayneeseguin/c3tk:latest
+	docker build . --platform linux/amd64 -f ./images/c3tk/Dockerfile -t wayneeseguin/c3tk:latest
 
 install: 
 	mkdir -p ~/.c3tk/{config,bin,lib}
