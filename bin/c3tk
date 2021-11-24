@@ -44,7 +44,7 @@ install() {
     grab_files &&
     chmod +x ${INSTALL_PATH}/c3tk &&
     echo "Installed \`${INSTALL_PATH}/c3tk\`" &&
-    echo -e "\nAdd $(paths) to your PATH:\n\n\texport PATH=\"\$(/opt/c3tk/bin/c3tk paths):\$PATH\"\n" &&
+    echo -e "\nAdd $(paths) to your PATH:\n\n\t[[ -x ${INSTALL_PATH}/c3tk ]] && export PATH=\"\$(${INSTALL_PATH}/c3tk paths):\$PATH\"\n" &&
     exit 0
 }
 
