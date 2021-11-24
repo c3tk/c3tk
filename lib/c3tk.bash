@@ -12,6 +12,10 @@ require() {
   done
 }
 
+defined() {
+  [[ -n "${1}" ]]
+}
+
 _c3tk_bootstrap() {
   # Load the list of all the things
   require libs
