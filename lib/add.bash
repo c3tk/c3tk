@@ -8,6 +8,7 @@ Where:
    image   - container registry compatible registry url
    tty     - if present will add '-t' 
    stream  - if present will add '--log-driver=none -a stdin -a stdout -a stderr'
+   mounts  - comma separated list of mount points
 
 USAGE
 exit 0
