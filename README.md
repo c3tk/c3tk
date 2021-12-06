@@ -15,7 +15,6 @@ First install a container runtime:
 Security Note: Please inspect the script before you run it so you understand 
 what is happening! Also feel free to download and install as separate steps. :)
 ```
-sudo bash 
 curl -o - https://raw.githubusercontent.com/c3tk/c3tk/main/bin/c3tk | sudo bash -
 ```
 Follow the output of the instructions emitted from the install such as adding
