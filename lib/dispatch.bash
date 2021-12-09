@@ -16,6 +16,7 @@ dispatch_cmd() {
     (info) info_cmds "$@";;
     (rm) rm_cmd "$@" ;;
     (shell) shell_for ${@} ;;
+    (workspace) workspace_for ${@} ;;
     (uninstall) uninstall ;;
     (*)
       cmd_exists ${cmd} || unknown "${cmd}"
