@@ -10,6 +10,7 @@ Usage:
 Where:
 
   <cmd> is the name of an added cmd which dictates container image
+
   <action> is one of:
     a|attach - attach to a running workspace  
     c|create - create a workspace

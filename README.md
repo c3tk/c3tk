@@ -59,6 +59,27 @@ variable `INSTALL_PATH` like so:
 ```
 export INSTALL_PATH="/usr/local/bin" ./
 ```
+## Workspaces
+
+Workspaces are intended for scenarios where we wish to have multiple commands
+available for use on a single container that we work with, as well as when we 
+want to use long running container sessions. Workspaces can be listed, paused,
+and unpaused.
+
+For example,
+
+```
+c3tk workspace create genesis
+```
+Will create a `genesis` workspace with the current working directory mounted at
+`/w` on the container. Then we can attach to the workspace container like so:
+```
+c3tk workspace attach genesis
+```
+For conveience and efficiency most commands have shorthands, in this case we could
+have simply type `c3tk w c genesis` and `c3tk w a genesis` instead.
+
+See the output of `c3tk w` for more options.
 
 ## Development Installation Via Repository
 
