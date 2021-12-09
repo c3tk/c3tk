@@ -36,4 +36,3 @@ workspace_for() {
     docker exec -it workspace-${WORKSPACE} /bin/bash
   fi
 }
-
