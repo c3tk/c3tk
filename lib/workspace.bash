@@ -58,9 +58,9 @@ workspace_create() {
   if ! workspace_running
   then
     CMD=/bin/bash run_cmd ${_cmd} "-c" 'while true ; do sleep 3600 ; done' && 
-    echo "workspace created"
+    echo "created workspace ${WORKSPACE}"
   else
-    echo "workspace already created"
+    echo "workspace ${WORKSPACE} already exists"
   fi
 
 }
@@ -70,21 +70,21 @@ workspace_delete() {
   set_workspace "${_cmd}"
   ${RUNTIME} stop workspace-${WORKSPACE}
   ${RUNTIME} rm workspace-${WORKSPACE}
-  echo "workspace deleted"
+  echo "=> workspace ${WORKSPACE}"
 }
 
 workspace_pause() {
   local _cmd="$1"
   set_workspace "${_cmd}"
   ${RUNTIME} pause workspace-${WORKSPACE}
-  echo "workspace paused"
+  echo "=> paused workspace ${WORKSPACE}"
 }
 
 workspace_unpause() {
   local _cmd="$1"
   set_workspace "${_cmd}"
   ${RUNTIME} unpause workspace-${WORKSPACE}
-  echo "workspace unpause"
+  echo "=> unpaused workspace ${WORKSPACE}"
 }
 
 workspace_list() {

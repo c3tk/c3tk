@@ -21,27 +21,13 @@ dispatch_cmd() {
       _action="$1"
       shift
       case "${_action}" in
-        (c|create) 
-          workspace_create ${@} 
-          ;;
-        (a|attach) 
-          workspace_attach ${@} 
-          ;;
-        (d|delete) 
-          workspace_delete ${@} 
-          ;;
-        (p|pause) 
-          workspace_pause ${@} 
-          ;;
-        (u|unpause) 
-          workspace_unpause ${@} 
-          ;;
-        (l|list) 
-          workspace_list ${@} 
-          ;;
-        (*)
-          workspace_usage
-          ;;
+        (c|create) workspace_create ${@} ;;
+        (a|attach) workspace_attach ${@} ;;
+        (d|delete) workspace_delete ${@} ;;
+        (p|pause) workspace_pause ${@} ;;
+        (u|unpause) workspace_unpause ${@} ;;
+        (l|list) workspace_list ${@} ;;
+        (*) workspace_usage ;;
       esac
       ;;
     (*)
