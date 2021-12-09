@@ -36,6 +36,9 @@ dispatch_cmd() {
         (u|unpause) 
           workspace_unpause ${@} 
           ;;
+        (l|list) 
+          workspace_list ${@} 
+          ;;
         (*)
           workspace_usage
           ;;

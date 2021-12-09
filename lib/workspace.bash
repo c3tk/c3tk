@@ -86,3 +86,11 @@ workspace_unpause() {
   ${RUNTIME} unpause workspace-${WORKSPACE}
   echo "workspace unpause"
 }
+
+workspace_list() {
+  local _cmd="$1"
+  set_workspace "${_cmd}"
+  echo -e "\nWorkspaces\n$(printf '=%.0s' {1..80})"
+  ${RUNTIME} ps | awk '{print $NF}' | awk '/workspace-/'
+}
+
