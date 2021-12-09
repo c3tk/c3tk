@@ -17,7 +17,30 @@ dispatch_cmd() {
     (rm) rm_cmd "$@" ;;
     (shell) shell_for ${@} ;;
     (uninstall) uninstall ;;
-    (w|workspace) workspace_for ${@} ;;
+    (w|workspace) 
+      _action="$1"
+      shift
+      case "${_action}" in
+        (c|create) 
+          workspace_create ${@} 
+          ;;
+        (a|attach) 
+          workspace_attach ${@} 
+          ;;
+        (d|delete) 
+          workspace_delete ${@} 
+          ;;
+        (p|pause) 
+          workspace_pause ${@} 
+          ;;
+        (u|unpause) 
+          workspace_unpause ${@} 
+          ;;
+        (*)
+          workspace_usage
+          ;;
+      esac
+      ;;
     (*)
       cmd_exists ${cmd} || unknown "${cmd}"
 
