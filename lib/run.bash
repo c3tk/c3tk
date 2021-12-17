@@ -33,7 +33,7 @@ run_cmd() {
 
   if [[ -n "${WORKSPACE}" ]]
   then
-    _c="${_c} --name workspace-${WORKSPACE} -d "
+    _c="${_c} --name workspace-${WORKSPACE} -d --restart unless-stopped "
   else
     _c="${_c} --rm "
   fi
