@@ -8,6 +8,7 @@ c3tk <cmd> [OPTIONS|ARGS]
 Where cmd is either one of:
 
   add <name> <image>
+  workspace <create|delete|attach|pause|unpause> <name>
   fetch <url-to-.c3tk-file>
   configure
   list
