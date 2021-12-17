@@ -72,7 +72,7 @@ For example,
 c3tk workspace create genesis
 ```
 Will create a `genesis` workspace with the current working directory mounted at
-`/w` on the container. Then we can attach to the workspace container like so:
+`/w` on the container. Then we can also attach to the workspace container like so:
 ```
 c3tk workspace attach genesis
 ```

@@ -3,11 +3,11 @@ info_usage() {
 
 Usage:
 
-    c3tk rm <cmd> [<cmd>[, ...]]
+    c3tk info <cmd> [<cmd>[, ...]]
 
 Description:
 
-    Removes one or more listed commands.
+    Information about the data stored for one or more given commands.
 
 USAGE
 exit 0
