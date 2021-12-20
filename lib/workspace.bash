@@ -55,8 +55,9 @@ workspace_running() {
 }
 
 workspace_create() {
-  local _cmd="$1"
-  set_workspace "${_cmd}"
+  local _cmd="$1" _name="$2"
+  [[ -n "${_name}" ]] || _name="${_cmd}"
+  set_workspace "${_name}"
   if ! workspace_running
   then
     CMD=/bin/bash run_cmd ${_cmd} "-c" 'while true ; do sleep 3600 ; done' && 
@@ -64,7 +65,6 @@ workspace_create() {
   else
     echo "workspace ${WORKSPACE} already exists"
   fi
-
 }
 
 workspace_delete() {
