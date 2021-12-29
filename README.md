@@ -76,7 +76,7 @@ Will create a `genesis` workspace with the current working directory mounted at
 ```
 c3tk workspace attach genesis
 ```
-For conveience and efficiency most commands have shorthands, in this case we could
+For convenience and efficiency most commands have shorthands, in this case we could
 have simply type `c3tk w c genesis` and `c3tk w a genesis` instead.
 
 See the output of `c3tk w` for more options.
