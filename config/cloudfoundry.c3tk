@@ -8,3 +8,4 @@ add genesis image=docker.io/starkandwayne/c3tk stream
 add safe image=docker.io/starkandwayne/c3tk stream
 add spruce image=docker.io/starkandwayne/c3tk stream
 add yamler image=docker.io/starkandwayne/c3tk stream
+add credhub image=docker.io/starkandwayne/c3tk stream
