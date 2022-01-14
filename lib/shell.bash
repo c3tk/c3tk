@@ -20,6 +20,6 @@ shell_for() {
   shift
   [[ "" == "${cmd}" ]] || cmd_exists "${cmd}" || unknown "${cmd}"
   image=$(config_read "${cmd}" image)
-  run_container -it "${image}" bash "$@"
+  run_container -it --platform="$(platform)" "${image}" bash "$@"
 }
 
